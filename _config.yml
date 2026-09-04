@@ -1,0 +1,45 @@
+# Jekyll configuration for the Githerd compliance rule documentation site.
+#
+# Published by GitHub Pages from a dedicated public sibling repository
+# (the compliance-rule-identifier decision record adr-022, Amendment A1);
+# this repository stays private and mirrors docs/rules/ into that sibling.
+#
+# url + baseurl below MUST compose to the value held in
+# scripts/RulesBaseUrl.config.json, because every SARIF helpUri the
+# validator emits is {RulesBaseUrl}/rules/{id} and the rules collection
+# permalink is what makes that path dereference.
+title: Githerd Compliance Rules
+description: >-
+  Canonical documentation for the GHFM front-matter diagnostic rules emitted
+  by the Githerd harness metadata validator.
+url: https://jamie-clayton.github.io
+baseurl: /githerd-rules
+
+remote_theme: pages-themes/minimal@v0.2.0
+plugins:
+  - jekyll-remote-theme
+
+# The generated rule pages are a collection, not loose pages, so the
+# {RulesBaseUrl}/rules/{id} path is set once here rather than repeated as a
+# per-page `permalink` key. Front matter on those pages is therefore free to
+# stay inside the harness front-matter vocabulary and pass the repository's
+# own validator (plan-106 S8 acceptance criterion 7).
+collections:
+  rules:
+    output: true
+    permalink: /rules/:name/
+
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: default
+
+# Hand-authored rule bodies are composed into the collection pages by
+# scripts/Build-RuleDocs.ps1. They are sources, not pages, so Jekyll must
+# not publish them a second time at their own URLs.
+exclude:
+  - "*.content.md"
+  - Gemfile
+  - Gemfile.lock
+  - vendor
