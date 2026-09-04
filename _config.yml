@@ -24,10 +24,17 @@ plugins:
 # per-page `permalink` key. Front matter on those pages is therefore free to
 # stay inside the harness front-matter vocabulary and pass the repository's
 # own validator (plan-106 S8 acceptance criterion 7).
+#
+# The placeholder is `:path`, not `:name`. Jekyll's `:name` runs the document
+# basename through Utils.slugify, which downcases it: `_rules/GHFM0001.md`
+# publishes at /rules/ghfm0001/. GitHub Pages URLs are case-sensitive, so the
+# helpUri the validator emits ({RulesBaseUrl}/rules/GHFM0001) returned 404
+# against the seeded site on 2026-09-04. `:path` is the document path relative
+# to the collection directory and preserves case (plan-106 S10 AC6/AC7).
 collections:
   rules:
     output: true
-    permalink: /rules/:name/
+    permalink: /rules/:path/
 
 defaults:
   - scope:
