@@ -1,7 +1,7 @@
 ---
 id: ghfm-rule-index
 title: "GHFM compliance rule index"
-description: "Catalogue of the 10 GHFM front-matter diagnostic rules emitted by the Githerd harness metadata validator."
+description: "Catalogue of the 11 GHFM front-matter diagnostic rules emitted by the Githerd harness metadata validator."
 creator: scripts/Build-RuleDocs.ps1
 subject:
   - compliance-rule
@@ -37,6 +37,7 @@ blocks it.
 | [GHFM0008](https://jamie-clayton.github.io/githerd-rules/rules/GHFM0008) | `identifier-shoulder-mismatch` | `warning` | C |
 | [GHFM0009](https://jamie-clayton.github.io/githerd-rules/rules/GHFM0009) | `unknown-key` | `warning` | A |
 | [GHFM0010](https://jamie-clayton.github.io/githerd-rules/rules/GHFM0010) | `metrics-key-shape` | `error` | A |
+| [GHFM0014](https://jamie-clayton.github.io/githerd-rules/rules/GHFM0014) | `initiative-intake-gate` | `warning` | B |
 
 ## Using a rule identifier
 
