@@ -1,0 +1,5 @@
+{
+  "level": "semantic",
+  "rule": "LP001",
+  "reason": "archived is not in validStatuses."
+}

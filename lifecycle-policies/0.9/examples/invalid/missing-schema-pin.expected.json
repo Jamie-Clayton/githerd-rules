@@ -1,0 +1,5 @@
+{
+  "level": "schema",
+  "rule": "required",
+  "reason": "$schema is required: it pins the standard version."
+}

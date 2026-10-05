@@ -1,0 +1,5 @@
+{
+  "level": "schema",
+  "rule": "minItems",
+  "reason": "A transition needs at least one triggering event."
+}

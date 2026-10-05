@@ -1,0 +1,4 @@
+node_modules/
+dotnet/bin/
+dotnet/obj/
+*-results.json
