@@ -9,6 +9,12 @@
 #   - never change after it is tagged lifecycle-policies-vX.Y.Z, from 1.0 on
 #     (0.x versions are pre-releases for testing and may still change).
 #
+# The pages and explainer SVGs under lifecycle-policies/ must:
+#   - link only to files that exist (internal links),
+#   - carry a title and desc, and no script, event handlers or external
+#     references (SVG check),
+#   - match what .github/explainers generates (the SVGs are generated).
+#
 # The rule pages in this repository are mirrored from Githerd and are not
 # checked here; Githerd's docs-rules-publish workflow owns them.
 
@@ -19,6 +25,7 @@ on:
     paths:
       - 'lifecycle-policies/**'
       - '.github/conformance/**'
+      - '.github/explainers/**'
       - '.github/workflows/lifecycle-policies.yml'
       - 'LICENSE.md'
       - 'NOTICE'
@@ -27,6 +34,7 @@ on:
     paths:
       - 'lifecycle-policies/**'
       - '.github/conformance/**'
+      - '.github/explainers/**'
       - '.github/workflows/lifecycle-policies.yml'
       - 'LICENSE.md'
       - 'NOTICE'
@@ -55,7 +63,9 @@ jobs:
         with:
           node-version: '22'
           cache: npm
-          cache-dependency-path: .github/conformance/package-lock.json
+          cache-dependency-path: |
+            .github/conformance/package-lock.json
+            .github/explainers/package-lock.json
 
       - uses: actions/setup-dotnet@v4
         with:
@@ -71,6 +81,9 @@ jobs:
       - name: Install
         run: npm ci
 
+      - name: Check tests
+        run: node --test "test/*.test.mjs"
+
       - name: Conformance (Ajv, semantic rules, Dublin Core)
         run: node conformance.mjs --root "$GITHUB_WORKSPACE" --out "$RUNNER_TEMP/ajv-results.json"
 
@@ -82,3 +95,19 @@ jobs:
 
       - name: Released versions are unchanged
         run: node check-immutable.mjs --root "$GITHUB_WORKSPACE"
+
+      - name: Explainer SVGs are safe and accessible
+        run: node check-svg.mjs --root "$GITHUB_WORKSPACE"
+
+      - name: Internal links resolve
+        run: node check-links.mjs --root "$GITHUB_WORKSPACE"
+
+      - name: Explainer SVGs match their generator
+        working-directory: .github/explainers
+        run: |
+          npm ci
+          node explainers.mjs --out "$RUNNER_TEMP/explainers"
+          diff -r "$RUNNER_TEMP/explainers" "$GITHUB_WORKSPACE/lifecycle-policies/assets" || {
+            echo "::error title=Explainer SVGs are stale::Regenerate with: node .github/explainers/explainers.mjs"
+            exit 1
+          }

@@ -1,0 +1,13 @@
+{
+  "name": "lifecycle-policies-explainers",
+  "version": "1.0.0",
+  "description": "Generates the Lifecycle Policy Standard explainer SVGs",
+  "scripts": {},
+  "type": "module",
+  "license": "Apache-2.0",
+  "private": true,
+  "dependencies": {
+    "@resvg/resvg-js": "2.6.2",
+    "roughjs": "4.6.6"
+  }
+}
