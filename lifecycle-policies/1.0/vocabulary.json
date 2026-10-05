@@ -1,0 +1,15 @@
+{
+  "triggeredBy": {
+    "active": ["decision", "checkpoint", "milestone"],
+    "retired": [
+      {
+        "value": "gate",
+        "replacedBy": "checkpoint",
+        "deprecatedAt": "2026-05-10",
+        "removedAt": "2026-08-15",
+        "rationale": "Renamed to checkpoint, the canonical name for a scheduled review point."
+      }
+    ]
+  },
+  "deprecationWindow": { "unit": "release", "length": 1 }
+}

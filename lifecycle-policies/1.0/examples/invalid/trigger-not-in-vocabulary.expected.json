@@ -1,0 +1,5 @@
+{
+  "level": "semantic",
+  "rule": "LP002",
+  "reason": "sprint-planning is not in vocabulary.triggeredBy.active."
+}

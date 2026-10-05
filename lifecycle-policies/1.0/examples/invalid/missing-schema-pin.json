@@ -1,0 +1,24 @@
+{
+  "title": "Minimal lifecycle policies",
+  "identifier": "https://example.org/policies/minimal",
+  "modified": "2026-10-05",
+  "policies": {
+    "document": {
+      "type": "document",
+      "field": "status",
+      "validStatuses": [
+        "draft",
+        "published"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "published",
+          "triggeredBy": [
+            "decision"
+          ]
+        }
+      ]
+    }
+  }
+}

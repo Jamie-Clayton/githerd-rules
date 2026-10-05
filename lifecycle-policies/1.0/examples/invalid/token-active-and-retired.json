@@ -1,0 +1,100 @@
+{
+  "$schema": "https://jamie-clayton.github.io/githerd-rules/lifecycle-policies/1.0/lifecycle-policies.schema.json",
+  "title": "Example engineering lifecycle policies",
+  "description": "Every Dublin Core envelope key the standard defines, a vocabulary, a wildcard transition and an extension key.",
+  "identifier": "ark:/99999/example-full",
+  "creator": "Example Engineering",
+  "contributor": [
+    "Architecture guild",
+    "Delivery team"
+  ],
+  "publisher": "example-org/example-repo",
+  "subject": [
+    "governance",
+    "lifecycle"
+  ],
+  "created": "2026-01-15T09:00:00+10:00",
+  "modified": "2026-10-05T15:30:00+10:00",
+  "version": "1.4.0",
+  "source": "https://jamie-clayton.github.io/githerd-rules/lifecycle-policies/1.0/examples/valid/minimal.json",
+  "language": "en-AU",
+  "coverage": "example-org/example-repo docs/**",
+  "rights": "Apache-2.0",
+  "references": [
+    "https://jamie-clayton.github.io/githerd-rules/lifecycle-policies/"
+  ],
+  "rolesRef": "docs/registers/roles.json",
+  "fieldContract": {
+    "rule": "Read the 'field' value from the policy. Never hardcode the key name.",
+    "rationale": "A consumer that hardcodes the key silently reads nothing when the declaration changes.",
+    "appliesTo": "Any tool that reads a lifecycle value off a governed entry."
+  },
+  "vocabulary": {
+    "roles": [
+      "architect",
+      "productOwner"
+    ],
+    "triggeredBy": {
+      "active": [
+        "decision",
+        "checkpoint",
+        "milestone",
+        "gate"
+      ],
+      "retired": [
+        {
+          "value": "gate",
+          "replacedBy": "checkpoint",
+          "deprecatedAt": "2026-05-10",
+          "removedAt": "2026-08-15"
+        }
+      ]
+    },
+    "deprecationWindow": {
+      "unit": "release",
+      "length": 1
+    }
+  },
+  "x-owner-team": "platform",
+  "policies": {
+    "decision-record": {
+      "type": "decision-record",
+      "field": "lifecycle",
+      "validStatuses": [
+        "proposed",
+        "review",
+        "approved",
+        "superseded"
+      ],
+      "transitions": [
+        {
+          "from": "proposed",
+          "to": "review",
+          "triggeredBy": [
+            "checkpoint"
+          ]
+        },
+        {
+          "from": "review",
+          "to": "approved",
+          "triggeredBy": [
+            "decision"
+          ]
+        },
+        {
+          "from": "*",
+          "to": "superseded",
+          "triggeredBy": [
+            "decision"
+          ]
+        }
+      ],
+      "approverRoles": [
+        "architect",
+        "productOwner"
+      ],
+      "notes": "Approved decisions are never deleted; a dead decision is superseded by its successor.",
+      "x-review-sla-days": 10
+    }
+  }
+}

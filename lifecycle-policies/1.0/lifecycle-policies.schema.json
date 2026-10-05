@@ -1,0 +1,238 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://jamie-clayton.github.io/githerd-rules/lifecycle-policies/1.0/lifecycle-policies.schema.json",
+  "$comment": "Lifecycle Policy Standard 1.0. SPDX-License-Identifier: Apache-2.0. Copyright 2026 Jamie Clayton. Released versions are immutable; changes ship as a new major.minor folder. Rules that JSON Schema cannot express (LP001 onwards) are defined in the specification and checked by conformance tooling.",
+  "title": "Lifecycle policies",
+  "description": "A repository's lifecycle-policies.json: which document types it governs, the statuses each may hold, the transitions between them, the events that trigger each transition, and the roles that approve them. Envelope keys are Dublin Core terms; see context.jsonld.",
+  "type": "object",
+  "required": ["$schema", "title", "identifier", "modified", "policies"],
+  "properties": {
+    "$schema": {
+      "description": "The released version of this standard the file conforms to (dcterms:conformsTo). Must name a major.minor folder; there is no floating version.",
+      "type": "string",
+      "pattern": "^https://jamie-clayton\\.github\\.io/githerd-rules/lifecycle-policies/[0-9]+\\.[0-9]+/lifecycle-policies\\.schema\\.json$"
+    },
+    "title": {
+      "description": "Name of the policy set (dcterms:title).",
+      "$ref": "#/$defs/text"
+    },
+    "description": {
+      "description": "What the policy set governs and why (dcterms:description).",
+      "$ref": "#/$defs/text"
+    },
+    "identifier": {
+      "description": "Persistent identifier of the policy set, as a URI such as an ARK (dcterms:identifier).",
+      "$ref": "#/$defs/uri"
+    },
+    "creator": {
+      "description": "Who authored the policy set (dcterms:creator).",
+      "$ref": "#/$defs/text"
+    },
+    "contributor": {
+      "description": "Others who contributed (dcterms:contributor).",
+      "$ref": "#/$defs/textList"
+    },
+    "publisher": {
+      "description": "The repository or organisation publishing the policy set (dcterms:publisher).",
+      "$ref": "#/$defs/text"
+    },
+    "subject": {
+      "description": "Keywords (dcterms:subject).",
+      "$ref": "#/$defs/textList"
+    },
+    "created": {
+      "description": "When the policy set was first created (dcterms:created).",
+      "$ref": "#/$defs/dateOrDateTime"
+    },
+    "modified": {
+      "description": "When the policy set last changed (dcterms:modified).",
+      "$ref": "#/$defs/dateOrDateTime"
+    },
+    "version": {
+      "description": "The policy set's own semantic version (dcterms:hasVersion), independent of the standard version in $schema.",
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "source": {
+      "description": "The policy set this one was derived from (dcterms:source).",
+      "$ref": "#/$defs/text"
+    },
+    "language": {
+      "description": "BCP 47 language tag for description and notes (dcterms:language).",
+      "type": "string",
+      "pattern": "^[A-Za-z]{2,3}(-[A-Za-z0-9]{2,8})*$"
+    },
+    "coverage": {
+      "description": "What the policy set governs: a repository, or path globs within one (dcterms:coverage).",
+      "$ref": "#/$defs/text"
+    },
+    "rights": {
+      "description": "Licence of the policy set, ideally an SPDX identifier (dcterms:rights).",
+      "$ref": "#/$defs/text"
+    },
+    "references": {
+      "description": "Related resources (dcterms:references).",
+      "$ref": "#/$defs/textList"
+    },
+    "rolesRef": {
+      "description": "Where the role catalogue lives: a URI or a repository-relative path (dcterms:requires).",
+      "$ref": "#/$defs/text"
+    },
+    "fieldContract": {
+      "description": "How consumers must find the lifecycle value on a governed entry.",
+      "type": "object",
+      "required": ["rule"],
+      "properties": {
+        "rule": { "$ref": "#/$defs/text" },
+        "rationale": { "$ref": "#/$defs/text" },
+        "appliesTo": { "$ref": "#/$defs/text" }
+      },
+      "additionalProperties": { "type": "string" }
+    },
+    "vocabulary": { "$ref": "#/$defs/vocabulary" },
+    "policies": {
+      "description": "One policy per governed document type, keyed by that type.",
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": { "$ref": "#/$defs/token" },
+      "additionalProperties": { "$ref": "#/$defs/policy" }
+    }
+  },
+  "patternProperties": {
+    "^x-": { "description": "Extension keys. Consumers that do not understand an extension ignore it." }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "text": { "type": "string", "minLength": 1 },
+    "textList": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/text" },
+      "uniqueItems": true
+    },
+    "uri": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:[^\\s]+$"
+    },
+    "date": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+    },
+    "dateOrDateTime": {
+      "description": "A calendar date, or a date-time with an explicit offset. A date-time without an offset is rejected because it is ambiguous.",
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}(T[0-9]{2}:[0-9]{2}(:[0-9]{2}(\\.[0-9]+)?)?(Z|[+-][0-9]{2}:[0-9]{2}))?$"
+    },
+    "token": {
+      "description": "A status, document type, role or event name: starts with a lowercase letter; letters, digits and hyphens only.",
+      "type": "string",
+      "pattern": "^[a-z][A-Za-z0-9-]*$"
+    },
+    "tokenList": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/token" },
+      "uniqueItems": true
+    },
+    "nonEmptyTokenList": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/token" },
+      "uniqueItems": true,
+      "minItems": 1
+    },
+    "policy": {
+      "type": "object",
+      "required": ["type", "field", "validStatuses", "transitions"],
+      "properties": {
+        "type": {
+          "description": "The governed document type (dcterms:type). Must equal this policy's key in policies (LP004).",
+          "$ref": "#/$defs/token"
+        },
+        "field": {
+          "description": "Which key on a governed entry carries its lifecycle status.",
+          "$ref": "#/$defs/text"
+        },
+        "validStatuses": {
+          "$ref": "#/$defs/nonEmptyTokenList"
+        },
+        "transitions": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/transition" }
+        },
+        "approverRoles": {
+          "description": "Roles that may approve transitions for this type. Local to the repository; never merged across repositories.",
+          "$ref": "#/$defs/tokenList"
+        },
+        "notes": {
+          "description": "Why the policy is shaped this way (dcterms:description).",
+          "$ref": "#/$defs/text"
+        }
+      },
+      "patternProperties": {
+        "^x-": {}
+      },
+      "additionalProperties": false
+    },
+    "transition": {
+      "type": "object",
+      "required": ["from", "to", "triggeredBy"],
+      "properties": {
+        "from": {
+          "description": "A declared status, or * for any status.",
+          "anyOf": [{ "$ref": "#/$defs/token" }, { "const": "*" }]
+        },
+        "to": { "$ref": "#/$defs/token" },
+        "triggeredBy": {
+          "$ref": "#/$defs/nonEmptyTokenList"
+        }
+      },
+      "patternProperties": {
+        "^x-": {}
+      },
+      "additionalProperties": false
+    },
+    "vocabulary": {
+      "description": "The tokens this file uses. The core vocabulary (vocabulary.json) is the starting set; a repository may add events and declares its own roles.",
+      "type": "object",
+      "properties": {
+        "roles": { "$ref": "#/$defs/tokenList" },
+        "triggeredBy": {
+          "type": "object",
+          "required": ["active"],
+          "properties": {
+            "active": {
+              "$ref": "#/$defs/nonEmptyTokenList"
+            },
+            "retired": {
+              "type": "array",
+              "items": { "$ref": "#/$defs/retiredToken" }
+            }
+          },
+          "additionalProperties": false
+        },
+        "deprecationWindow": {
+          "description": "How long a retired token is still accepted on read.",
+          "type": "object",
+          "required": ["unit", "length"],
+          "properties": {
+            "unit": { "enum": ["release", "day"] },
+            "length": { "type": "integer", "minimum": 0 }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "retiredToken": {
+      "description": "A token no longer emitted. deprecatedAt to removedAt is its validity window (dcterms:valid).",
+      "type": "object",
+      "required": ["value", "replacedBy", "deprecatedAt"],
+      "properties": {
+        "value": { "$ref": "#/$defs/token" },
+        "replacedBy": { "$ref": "#/$defs/token" },
+        "deprecatedAt": { "$ref": "#/$defs/date" },
+        "removedAt": { "$ref": "#/$defs/date" },
+        "rationale": { "$ref": "#/$defs/text" }
+      },
+      "additionalProperties": false
+    }
+  }
+}

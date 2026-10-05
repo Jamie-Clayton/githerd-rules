@@ -1,0 +1,5 @@
+{
+  "level": "schema",
+  "rule": "additionalProperties",
+  "reason": "Unknown policy key validStatus; extension keys must start with x-."
+}

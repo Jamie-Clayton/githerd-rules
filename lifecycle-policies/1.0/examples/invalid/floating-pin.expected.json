@@ -1,0 +1,5 @@
+{
+  "level": "schema",
+  "rule": "pattern",
+  "reason": "$schema must name a released major.minor folder, never a floating version."
+}

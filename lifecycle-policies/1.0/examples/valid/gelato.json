@@ -1,0 +1,456 @@
+{
+  "$schema": "https://jamie-clayton.github.io/githerd-rules/lifecycle-policies/1.0/lifecycle-policies.schema.json",
+  "title": "Gelato autopilot lifecycle policies",
+  "identifier": "ark:/99999/example-gelato",
+  "created": "2026-05-10T00:00:00+10:00",
+  "modified": "2026-08-15T22:00:00+10:00",
+  "version": "3.0.0",
+  "description": "Per-type document lifecycle policies. Authoritative for two things a consumer must never assume: WHICH KEY carries the lifecycle value (each policy's 'field'), and WHICH VALUES that key may hold (each policy's 'validStatuses'). Both are declared, not conventional.",
+  "publisher": "Jamie-Clayton/Gelato-autopilot",
+  "language": "en-AU",
+  "rights": "Apache-2.0",
+  "rolesRef": "docs/registers/roles.json",
+  "fieldContract": {
+    "rule": "Read the 'field' value from the policy. Never hardcode the key name.",
+    "rationale": "'field' declares which key on a register entry carries the lifecycle value. A consuming repository may legitimately choose a different key for its own taxonomy. What is never correct is a consumer that hardcodes a key name, because it silently reads nothing when the declaration changes or when it is pointed at another repository's registers.",
+    "appliesTo": "Any script, skill, agent, hook, or cross-repo parser that reads a lifecycle value off a register entry.",
+    "migratedAt": "2026-08-15",
+    "migrationNote": "Renamed from 'lifecycleStatus' to 'lifecycle' on 2026-08-15, aligning with the register's own name and with Githerd. Githerd's RegisterParser resolves this declaration and falls back to 'lifecycleStatus' then 'status'. In-repo consumers were updated to the new key but still hardcode it; teaching them to read this declaration is outstanding. See docs/architecture/register-field-reference.md.",
+    "excluded": "docs/registers/manager.json is an append-only intake log written by an external intake-detector producer, with entries tagged for other repositories. It retains 'lifecycleStatus' by design and is not governed by these policies."
+  },
+  "vocabulary": {
+    "roles": [
+      "architect",
+      "deliveryPlanning",
+      "productOwner",
+      "technicalLead"
+    ],
+    "triggeredBy": {
+      "active": [
+        "checkpoint",
+        "decision",
+        "milestone"
+      ],
+      "retired": [
+        {
+          "value": "gate",
+          "replacedBy": "checkpoint",
+          "deprecatedAt": "2026-05-10",
+          "removedAt": "2026-08-15"
+        }
+      ]
+    },
+    "deprecationWindow": {
+      "unit": "release",
+      "length": 1
+    }
+  },
+  "policies": {
+    "initiative": {
+      "type": "initiative",
+      "field": "lifecycle",
+      "validStatuses": [
+        "draft",
+        "review",
+        "approved",
+        "rejected",
+        "superseded",
+        "archived"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "review",
+          "triggeredBy": [
+            "decision",
+            "checkpoint"
+          ]
+        },
+        {
+          "from": "review",
+          "to": "approved",
+          "triggeredBy": [
+            "decision",
+            "checkpoint"
+          ]
+        },
+        {
+          "from": "review",
+          "to": "rejected",
+          "triggeredBy": [
+            "decision"
+          ]
+        },
+        {
+          "from": "review",
+          "to": "superseded",
+          "triggeredBy": [
+            "decision"
+          ]
+        },
+        {
+          "from": "approved",
+          "to": "superseded",
+          "triggeredBy": [
+            "decision"
+          ]
+        },
+        {
+          "from": "*",
+          "to": "archived",
+          "triggeredBy": [
+            "decision",
+            "milestone"
+          ]
+        }
+      ],
+      "approverRoles": [
+        "architect",
+        "productOwner",
+        "deliveryPlanning"
+      ],
+      "notes": "Deliberately diverges from Githerd's initiative policy (draft, approved, archived, superseded -- no review, no rejected). Gelato gates initiatives through an explicit review stage before approval; Githerd's observed corpus does not use one. Per lifecycle-policies.json's own fieldContract.rationale, a consuming repository may legitimately choose a different vocabulary for its own taxonomy -- this divergence is intentional and documented, not drift. See docs/plans/2026-08-15-adr-051-corpus-lifecycle-migration-design.md Part A2."
+    },
+    "plan": {
+      "type": "plan",
+      "field": "lifecycle",
+      "validStatuses": [
+        "draft",
+        "review",
+        "approved",
+        "rejected",
+        "superseded",
+        "archived"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "review",
+          "triggeredBy": [
+            "decision",
+            "checkpoint"
+          ]
+        },
+        {
+          "from": "review",
+          "to": "approved",
+          "triggeredBy": [
+            "decision",
+            "checkpoint"
+          ]
+        },
+        {
+          "from": "review",
+          "to": "rejected",
+          "triggeredBy": [
+            "decision"
+          ]
+        },
+        {
+          "from": "review",
+          "to": "superseded",
+          "triggeredBy": [
+            "decision"
+          ]
+        },
+        {
+          "from": "approved",
+          "to": "superseded",
+          "triggeredBy": [
+            "decision"
+          ]
+        },
+        {
+          "from": "*",
+          "to": "archived",
+          "triggeredBy": [
+            "decision",
+            "milestone"
+          ]
+        }
+      ],
+      "approverRoles": [
+        "architect",
+        "deliveryPlanning"
+      ],
+      "x-deviationSeverityLevels": [
+        "minor",
+        "major",
+        "critical"
+      ],
+      "notes": "This policy governs plans.json REGISTER ENTRIES only -- a plan's own governance state (draft/review/approved/.../archived), the same vocabulary as every other governed type. It does NOT govern a plan markdown document's own front matter, which uses a separate `status` field (PlanStatus vocabulary: backlog, in-progress, blocked, done) per schemas/front-matter-plan.json and Githerd's PlanFrontMatter contract -- two different surfaces about the same plan, never conflated. Githerd has no equivalent register to this policy; only the document-front-matter side has a Githerd counterpart (docs/registers/status-policies.json there). See docs/plans/2026-08-15-adr-051-corpus-lifecycle-migration-design.md Part C."
+    },
+    "adr": {
+      "type": "adr",
+      "field": "lifecycle",
+      "validStatuses": [
+        "draft",
+        "review",
+        "approved",
+        "rejected",
+        "superseded",
+        "archived"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "review",
+          "triggeredBy": [
+            "decision",
+            "checkpoint"
+          ]
+        },
+        {
+          "from": "review",
+          "to": "approved",
+          "triggeredBy": [
+            "decision",
+            "checkpoint"
+          ]
+        },
+        {
+          "from": "review",
+          "to": "rejected",
+          "triggeredBy": [
+            "decision"
+          ]
+        },
+        {
+          "from": "review",
+          "to": "superseded",
+          "triggeredBy": [
+            "decision"
+          ]
+        },
+        {
+          "from": "approved",
+          "to": "superseded",
+          "triggeredBy": [
+            "decision"
+          ]
+        },
+        {
+          "from": "*",
+          "to": "archived",
+          "triggeredBy": [
+            "decision",
+            "milestone"
+          ]
+        }
+      ],
+      "approverRoles": [
+        "architect",
+        "productOwner",
+        "technicalLead"
+      ],
+      "notes": "Vocabulary differs from Githerd's adr policy (proposed, review, approved, superseded -- no draft, no rejected; Githerd starts ADRs at 'proposed' where Gelato starts at 'draft', and never archives an approved ADR, only supersedes it). No live Gelato ADR currently holds 'rejected' or 'archived', so narrowing to match Githerd is a live option, not yet adopted. See docs/plans/2026-08-15-adr-051-corpus-lifecycle-migration-design.md Part A2."
+    },
+    "spec": {
+      "type": "spec",
+      "field": "lifecycle",
+      "validStatuses": [
+        "draft",
+        "review",
+        "approved",
+        "rejected",
+        "superseded",
+        "archived"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "review",
+          "triggeredBy": [
+            "decision",
+            "checkpoint"
+          ]
+        },
+        {
+          "from": "review",
+          "to": "approved",
+          "triggeredBy": [
+            "decision",
+            "checkpoint"
+          ]
+        },
+        {
+          "from": "review",
+          "to": "rejected",
+          "triggeredBy": [
+            "decision"
+          ]
+        },
+        {
+          "from": "review",
+          "to": "superseded",
+          "triggeredBy": [
+            "decision"
+          ]
+        },
+        {
+          "from": "approved",
+          "to": "superseded",
+          "triggeredBy": [
+            "decision"
+          ]
+        },
+        {
+          "from": "*",
+          "to": "archived",
+          "triggeredBy": [
+            "decision",
+            "milestone"
+          ]
+        }
+      ],
+      "approverRoles": [
+        "architect",
+        "technicalLead"
+      ],
+      "notes": "Closes the gap adr-051 recorded in its Deferred section: front-matter-spec.json requires `lifecycle`, but no policy declared the vocabulary, so spec documents got a presence check and no vocabulary check. Vocabulary matches the initiative/plan/adr policies rather than introducing a fifth dialect -- 13 of the 15 spec documents carrying front matter today already hold `approved` or `draft`. The remaining two hold `ready-for-arch`, which is NOT admitted here: adr-051 rejected the retired table vocabulary (`in-progress`, `completed`) rather than legalise it, and the same reasoning applies. Those two documents are corpus defects to re-key, tracked under plan-053. Note that all 15 currently carry the value under a `status` key; the key migration to `lifecycle` is corpus work, sequenced separately. Githerd declares no spec policy, so there is nothing to align against. See docs/plans/2026-08-15-adr-051-corpus-lifecycle-migration-design.md Part D Phase 2."
+    },
+    "persona": {
+      "type": "persona",
+      "field": "lifecycle",
+      "validStatuses": [
+        "draft",
+        "review",
+        "approved",
+        "rejected",
+        "superseded",
+        "archived"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "review",
+          "triggeredBy": [
+            "decision",
+            "checkpoint"
+          ]
+        },
+        {
+          "from": "review",
+          "to": "approved",
+          "triggeredBy": [
+            "decision",
+            "checkpoint"
+          ]
+        },
+        {
+          "from": "review",
+          "to": "rejected",
+          "triggeredBy": [
+            "decision"
+          ]
+        },
+        {
+          "from": "review",
+          "to": "superseded",
+          "triggeredBy": [
+            "decision"
+          ]
+        },
+        {
+          "from": "approved",
+          "to": "superseded",
+          "triggeredBy": [
+            "decision"
+          ]
+        },
+        {
+          "from": "*",
+          "to": "archived",
+          "triggeredBy": [
+            "decision",
+            "milestone"
+          ]
+        }
+      ],
+      "approverRoles": [
+        "architect",
+        "productOwner"
+      ],
+      "notes": "Standing reader profiles under docs/reports/personas/ (adr-054 D5, plan-056). Vocabulary reuses the spec dialect verbatim rather than coining a seventh: profiles are governed prose documents with the same review shape. The corpus contract -- exactly one profile per role token in roles.json -- is enforced by scripts/tests/Validate-PersonaProfiles.Tests.ps1, not by this policy. roles.json remains the catalogue of record; a profile document never introduces a role."
+    },
+    "risk": {
+      "type": "risk",
+      "field": "lifecycle",
+      "validStatuses": [
+        "open",
+        "review",
+        "accepted",
+        "mitigated",
+        "escalated",
+        "closed"
+      ],
+      "transitions": [
+        {
+          "from": "open",
+          "to": "review",
+          "triggeredBy": [
+            "checkpoint",
+            "decision"
+          ]
+        },
+        {
+          "from": "review",
+          "to": "mitigated",
+          "triggeredBy": [
+            "decision"
+          ]
+        },
+        {
+          "from": "review",
+          "to": "escalated",
+          "triggeredBy": [
+            "decision",
+            "checkpoint"
+          ]
+        },
+        {
+          "from": "review",
+          "to": "accepted",
+          "triggeredBy": [
+            "decision",
+            "checkpoint"
+          ]
+        },
+        {
+          "from": "mitigated",
+          "to": "closed",
+          "triggeredBy": [
+            "milestone",
+            "decision"
+          ]
+        },
+        {
+          "from": "escalated",
+          "to": "closed",
+          "triggeredBy": [
+            "decision"
+          ]
+        },
+        {
+          "from": "accepted",
+          "to": "closed",
+          "triggeredBy": [
+            "decision",
+            "milestone"
+          ]
+        }
+      ],
+      "approverRoles": [
+        "architect",
+        "productOwner"
+      ],
+      "x-severityLevels": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ],
+      "notes": "Githerd has no risk register or equivalent policy -- nothing to align against. Vocabulary is Gelato's own."
+    }
+  }
+}

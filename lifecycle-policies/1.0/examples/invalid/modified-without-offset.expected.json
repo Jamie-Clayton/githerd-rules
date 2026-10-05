@@ -1,0 +1,5 @@
+{
+  "level": "schema",
+  "rule": "pattern",
+  "reason": "A date-time must carry an offset or Z."
+}

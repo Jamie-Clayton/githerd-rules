@@ -1,0 +1,5 @@
+{
+  "level": "schema",
+  "rule": "additionalProperties",
+  "reason": "lastUpdated is not a key; use modified (dcterms:modified)."
+}

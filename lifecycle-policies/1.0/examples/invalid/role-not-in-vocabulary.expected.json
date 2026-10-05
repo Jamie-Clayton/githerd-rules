@@ -1,0 +1,5 @@
+{
+  "level": "semantic",
+  "rule": "LP003",
+  "reason": "securityReview is not in vocabulary.roles."
+}
