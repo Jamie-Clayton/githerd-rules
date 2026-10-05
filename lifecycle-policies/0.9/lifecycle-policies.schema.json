@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://jamie-clayton.github.io/githerd-rules/lifecycle-policies/1.0/lifecycle-policies.schema.json",
-  "$comment": "Lifecycle Policy Standard 1.0. SPDX-License-Identifier: Apache-2.0. Copyright 2026 Jamie Clayton. Released versions are immutable; changes ship as a new major.minor folder. Rules that JSON Schema cannot express (LP001 onwards) are defined in the specification and checked by conformance tooling.",
+  "$id": "https://jamie-clayton.github.io/githerd-rules/lifecycle-policies/0.9/lifecycle-policies.schema.json",
+  "$comment": "Lifecycle Policy Standard 0.9, a pre-release for testing before 1.0. SPDX-License-Identifier: Apache-2.0. Copyright 2026 Jamie Clayton. 0.x versions may still change within their folder; from 1.0, released versions are immutable and changes ship as a new major.minor folder. Rules that JSON Schema cannot express (LP001 onwards) are defined in the specification and checked by conformance tooling.",
   "title": "Lifecycle policies",
   "description": "A repository's lifecycle-policies.json: which document types it governs, the statuses each may hold, the transitions between them, the events that trigger each transition, and the roles that approve them. Envelope keys are Dublin Core terms; see context.jsonld.",
   "type": "object",

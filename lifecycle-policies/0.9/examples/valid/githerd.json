@@ -1,5 +1,5 @@
 {
-  "$schema": "https://jamie-clayton.github.io/githerd-rules/lifecycle-policies/1.0/lifecycle-policies.schema.json",
+  "$schema": "https://jamie-clayton.github.io/githerd-rules/lifecycle-policies/0.9/lifecycle-policies.schema.json",
   "title": "Githerd lifecycle policies",
   "identifier": "ark:/99999/example-githerd",
   "created": "2026-07-06T11:00:00+10:00",

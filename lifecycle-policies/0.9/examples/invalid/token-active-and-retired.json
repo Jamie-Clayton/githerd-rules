@@ -1,5 +1,5 @@
 {
-  "$schema": "https://jamie-clayton.github.io/githerd-rules/lifecycle-policies/1.0/lifecycle-policies.schema.json",
+  "$schema": "https://jamie-clayton.github.io/githerd-rules/lifecycle-policies/0.9/lifecycle-policies.schema.json",
   "title": "Example engineering lifecycle policies",
   "description": "Every Dublin Core envelope key the standard defines, a vocabulary, a wildcard transition and an extension key.",
   "identifier": "ark:/99999/example-full",
@@ -16,7 +16,7 @@
   "created": "2026-01-15T09:00:00+10:00",
   "modified": "2026-10-05T15:30:00+10:00",
   "version": "1.4.0",
-  "source": "https://jamie-clayton.github.io/githerd-rules/lifecycle-policies/1.0/examples/valid/minimal.json",
+  "source": "https://jamie-clayton.github.io/githerd-rules/lifecycle-policies/0.9/examples/valid/minimal.json",
   "language": "en-AU",
   "coverage": "example-org/example-repo docs/**",
   "rights": "Apache-2.0",
@@ -38,7 +38,8 @@
       "active": [
         "decision",
         "checkpoint",
-        "milestone"
+        "milestone",
+        "gate"
       ],
       "retired": [
         {
@@ -70,7 +71,7 @@
           "from": "proposed",
           "to": "review",
           "triggeredBy": [
-            "sprint-planning"
+            "checkpoint"
           ]
         },
         {

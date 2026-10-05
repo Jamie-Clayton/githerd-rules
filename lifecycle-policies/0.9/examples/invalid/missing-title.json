@@ -1,6 +1,5 @@
 {
-  "$schema": "https://jamie-clayton.github.io/githerd-rules/lifecycle-policies/1.0/lifecycle-policies.schema.json",
-  "title": "Minimal lifecycle policies",
+  "$schema": "https://jamie-clayton.github.io/githerd-rules/lifecycle-policies/0.9/lifecycle-policies.schema.json",
   "identifier": "https://example.org/policies/minimal",
   "modified": "2026-10-05",
   "policies": {
@@ -15,13 +14,6 @@
         {
           "from": "draft",
           "to": "published",
-          "triggeredBy": [
-            "decision"
-          ]
-        },
-        {
-          "from": "published",
-          "to": "archived",
           "triggeredBy": [
             "decision"
           ]

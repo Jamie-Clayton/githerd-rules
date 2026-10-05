@@ -6,7 +6,8 @@
 #   - pass its conformance examples under two independent validators (Ajv and
 #     JsonSchema.Net) that agree example by example,
 #   - map every Dublin Core term the standard defines through context.jsonld,
-#   - never change after it is tagged lifecycle-policies-vX.Y.Z.
+#   - never change after it is tagged lifecycle-policies-vX.Y.Z, from 1.0 on
+#     (0.x versions are pre-releases for testing and may still change).
 #
 # The rule pages in this repository are mirrored from Githerd and are not
 # checked here; Githerd's docs-rules-publish workflow owns them.

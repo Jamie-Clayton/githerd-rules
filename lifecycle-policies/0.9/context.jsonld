@@ -2,7 +2,7 @@
   "@context": {
     "@version": 1.1,
     "dcterms": "http://purl.org/dc/terms/",
-    "lp": "https://jamie-clayton.github.io/githerd-rules/lifecycle-policies/1.0/terms#",
+    "lp": "https://jamie-clayton.github.io/githerd-rules/lifecycle-policies/0.9/terms#",
 
     "$schema": { "@id": "dcterms:conformsTo", "@type": "@id" },
     "title": "dcterms:title",
