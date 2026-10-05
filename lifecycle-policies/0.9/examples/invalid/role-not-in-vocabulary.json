@@ -54,7 +54,6 @@
       "length": 1
     }
   },
-  "x-owner-team": "platform",
   "policies": {
     "decision-record": {
       "type": "decision-record",
@@ -94,7 +93,12 @@
         "securityReview"
       ],
       "notes": "Approved decisions are never deleted; a dead decision is superseded by its successor.",
-      "x-review-sla-days": 10
+      "extensions": {
+        "reviewSlaDays": 10
+      }
     }
+  },
+  "extensions": {
+    "ownerTeam": "platform"
   }
 }

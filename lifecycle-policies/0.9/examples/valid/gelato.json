@@ -173,12 +173,14 @@
         "architect",
         "deliveryPlanning"
       ],
-      "x-deviationSeverityLevels": [
-        "minor",
-        "major",
-        "critical"
-      ],
-      "notes": "This policy governs plans.json REGISTER ENTRIES only -- a plan's own governance state (draft/review/approved/.../archived), the same vocabulary as every other governed type. It does NOT govern a plan markdown document's own front matter, which uses a separate `status` field (PlanStatus vocabulary: backlog, in-progress, blocked, done) per schemas/front-matter-plan.json and Githerd's PlanFrontMatter contract -- two different surfaces about the same plan, never conflated. Githerd has no equivalent register to this policy; only the document-front-matter side has a Githerd counterpart (docs/registers/status-policies.json there). See docs/plans/2026-08-15-adr-051-corpus-lifecycle-migration-design.md Part C."
+      "notes": "This policy governs plans.json REGISTER ENTRIES only -- a plan's own governance state (draft/review/approved/.../archived), the same vocabulary as every other governed type. It does NOT govern a plan markdown document's own front matter, which uses a separate `status` field (PlanStatus vocabulary: backlog, in-progress, blocked, done) per schemas/front-matter-plan.json and Githerd's PlanFrontMatter contract -- two different surfaces about the same plan, never conflated. Githerd has no equivalent register to this policy; only the document-front-matter side has a Githerd counterpart (docs/registers/status-policies.json there). See docs/plans/2026-08-15-adr-051-corpus-lifecycle-migration-design.md Part C.",
+      "extensions": {
+        "deviationSeverityLevels": [
+          "minor",
+          "major",
+          "critical"
+        ]
+      }
     },
     "adr": {
       "type": "adr",
@@ -444,13 +446,15 @@
         "architect",
         "productOwner"
       ],
-      "x-severityLevels": [
-        "low",
-        "medium",
-        "high",
-        "critical"
-      ],
-      "notes": "Githerd has no risk register or equivalent policy -- nothing to align against. Vocabulary is Gelato's own."
+      "notes": "Githerd has no risk register or equivalent policy -- nothing to align against. Vocabulary is Gelato's own.",
+      "extensions": {
+        "severityLevels": [
+          "low",
+          "medium",
+          "high",
+          "critical"
+        ]
+      }
     }
   }
 }

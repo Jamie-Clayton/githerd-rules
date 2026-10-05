@@ -5,7 +5,13 @@
   "title": "Lifecycle policies",
   "description": "A repository's lifecycle-policies.json: which document types it governs, the statuses each may hold, the transitions between them, the events that trigger each transition, and the roles that approve them. Envelope keys are Dublin Core terms; see context.jsonld.",
   "type": "object",
-  "required": ["$schema", "title", "identifier", "modified", "policies"],
+  "required": [
+    "$schema",
+    "title",
+    "identifier",
+    "modified",
+    "policies"
+  ],
   "properties": {
     "$schema": {
       "description": "The released version of this standard the file conforms to (dcterms:conformsTo). Must name a major.minor folder; there is no floating version.",
@@ -81,32 +87,53 @@
     "fieldContract": {
       "description": "How consumers must find the lifecycle value on a governed entry.",
       "type": "object",
-      "required": ["rule"],
+      "required": [
+        "rule"
+      ],
       "properties": {
-        "rule": { "$ref": "#/$defs/text" },
-        "rationale": { "$ref": "#/$defs/text" },
-        "appliesTo": { "$ref": "#/$defs/text" }
+        "rule": {
+          "$ref": "#/$defs/text"
+        },
+        "rationale": {
+          "$ref": "#/$defs/text"
+        },
+        "appliesTo": {
+          "$ref": "#/$defs/text"
+        }
       },
-      "additionalProperties": { "type": "string" }
+      "additionalProperties": {
+        "type": "string"
+      }
     },
-    "vocabulary": { "$ref": "#/$defs/vocabulary" },
+    "vocabulary": {
+      "$ref": "#/$defs/vocabulary"
+    },
     "policies": {
       "description": "One policy per governed document type, keyed by that type.",
       "type": "object",
       "minProperties": 1,
-      "propertyNames": { "$ref": "#/$defs/token" },
-      "additionalProperties": { "$ref": "#/$defs/policy" }
+      "propertyNames": {
+        "$ref": "#/$defs/token"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/policy"
+      }
+    },
+    "extensions": {
+      "$ref": "#/$defs/extensions"
     }
-  },
-  "patternProperties": {
-    "^x-": { "description": "Extension keys. Consumers that do not understand an extension ignore it." }
   },
   "additionalProperties": false,
   "$defs": {
-    "text": { "type": "string", "minLength": 1 },
+    "text": {
+      "type": "string",
+      "minLength": 1
+    },
     "textList": {
       "type": "array",
-      "items": { "$ref": "#/$defs/text" },
+      "items": {
+        "$ref": "#/$defs/text"
+      },
       "uniqueItems": true
     },
     "uri": {
@@ -129,18 +156,27 @@
     },
     "tokenList": {
       "type": "array",
-      "items": { "$ref": "#/$defs/token" },
+      "items": {
+        "$ref": "#/$defs/token"
+      },
       "uniqueItems": true
     },
     "nonEmptyTokenList": {
       "type": "array",
-      "items": { "$ref": "#/$defs/token" },
+      "items": {
+        "$ref": "#/$defs/token"
+      },
       "uniqueItems": true,
       "minItems": 1
     },
     "policy": {
       "type": "object",
-      "required": ["type", "field", "validStatuses", "transitions"],
+      "required": [
+        "type",
+        "field",
+        "validStatuses",
+        "transitions"
+      ],
       "properties": {
         "type": {
           "description": "The governed document type (dcterms:type). Must equal this policy's key in policies (LP004).",
@@ -155,7 +191,9 @@
         },
         "transitions": {
           "type": "array",
-          "items": { "$ref": "#/$defs/transition" }
+          "items": {
+            "$ref": "#/$defs/transition"
+          }
         },
         "approverRoles": {
           "description": "Roles that may approve transitions for this type. Local to the repository; never merged across repositories.",
@@ -164,28 +202,41 @@
         "notes": {
           "description": "Why the policy is shaped this way (dcterms:description).",
           "$ref": "#/$defs/text"
+        },
+        "extensions": {
+          "$ref": "#/$defs/extensions"
         }
-      },
-      "patternProperties": {
-        "^x-": {}
       },
       "additionalProperties": false
     },
     "transition": {
       "type": "object",
-      "required": ["from", "to", "triggeredBy"],
+      "required": [
+        "from",
+        "to",
+        "triggeredBy"
+      ],
       "properties": {
         "from": {
           "description": "A declared status, or * for any status.",
-          "anyOf": [{ "$ref": "#/$defs/token" }, { "const": "*" }]
+          "anyOf": [
+            {
+              "$ref": "#/$defs/token"
+            },
+            {
+              "const": "*"
+            }
+          ]
         },
-        "to": { "$ref": "#/$defs/token" },
+        "to": {
+          "$ref": "#/$defs/token"
+        },
         "triggeredBy": {
           "$ref": "#/$defs/nonEmptyTokenList"
+        },
+        "extensions": {
+          "$ref": "#/$defs/extensions"
         }
-      },
-      "patternProperties": {
-        "^x-": {}
       },
       "additionalProperties": false
     },
@@ -193,17 +244,23 @@
       "description": "The tokens this file uses. The core vocabulary (vocabulary.json) is the starting set; a repository may add events and declares its own roles.",
       "type": "object",
       "properties": {
-        "roles": { "$ref": "#/$defs/tokenList" },
+        "roles": {
+          "$ref": "#/$defs/tokenList"
+        },
         "triggeredBy": {
           "type": "object",
-          "required": ["active"],
+          "required": [
+            "active"
+          ],
           "properties": {
             "active": {
               "$ref": "#/$defs/nonEmptyTokenList"
             },
             "retired": {
               "type": "array",
-              "items": { "$ref": "#/$defs/retiredToken" }
+              "items": {
+                "$ref": "#/$defs/retiredToken"
+              }
             }
           },
           "additionalProperties": false
@@ -211,10 +268,21 @@
         "deprecationWindow": {
           "description": "How long a retired token is still accepted on read.",
           "type": "object",
-          "required": ["unit", "length"],
+          "required": [
+            "unit",
+            "length"
+          ],
           "properties": {
-            "unit": { "enum": ["release", "day"] },
-            "length": { "type": "integer", "minimum": 0 }
+            "unit": {
+              "enum": [
+                "release",
+                "day"
+              ]
+            },
+            "length": {
+              "type": "integer",
+              "minimum": 0
+            }
           },
           "additionalProperties": false
         }
@@ -224,15 +292,33 @@
     "retiredToken": {
       "description": "A token no longer emitted. deprecatedAt to removedAt is its validity window (dcterms:valid).",
       "type": "object",
-      "required": ["value", "replacedBy", "deprecatedAt"],
+      "required": [
+        "value",
+        "replacedBy",
+        "deprecatedAt"
+      ],
       "properties": {
-        "value": { "$ref": "#/$defs/token" },
-        "replacedBy": { "$ref": "#/$defs/token" },
-        "deprecatedAt": { "$ref": "#/$defs/date" },
-        "removedAt": { "$ref": "#/$defs/date" },
-        "rationale": { "$ref": "#/$defs/text" }
+        "value": {
+          "$ref": "#/$defs/token"
+        },
+        "replacedBy": {
+          "$ref": "#/$defs/token"
+        },
+        "deprecatedAt": {
+          "$ref": "#/$defs/date"
+        },
+        "removedAt": {
+          "$ref": "#/$defs/date"
+        },
+        "rationale": {
+          "$ref": "#/$defs/text"
+        }
       },
       "additionalProperties": false
+    },
+    "extensions": {
+      "description": "Repository-specific data the standard does not define, kept apart so every other key stays strictly checked. Any keys and values. Consumers that do not understand an extension ignore it.",
+      "type": "object"
     }
   }
 }

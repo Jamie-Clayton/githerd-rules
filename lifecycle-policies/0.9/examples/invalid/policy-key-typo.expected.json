@@ -1,5 +1,5 @@
 {
   "level": "schema",
   "rule": "additionalProperties",
-  "reason": "Unknown policy key validStatus; extension keys must start with x-."
+  "reason": "Unknown policy key validStatus; repository-specific keys belong in the extensions object."
 }

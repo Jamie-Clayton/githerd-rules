@@ -48,6 +48,7 @@
     "from": "lp:from",
     "to": "lp:to",
     "approverRoles": { "@id": "lp:approverRole", "@container": "@set" },
-    "notes": "dcterms:description"
+    "notes": "dcterms:description",
+    "extensions": { "@id": "lp:extensions", "@type": "@json" }
   }
 }
