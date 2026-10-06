@@ -5,15 +5,23 @@ description: A public, tool-independent format for the lifecycle policies of doc
 
 # Lifecycle Policy Standard
 
-![One public file format, lifecycle-policies.json, used by Githerd, Gelato and any other repository or tool, checked by any JSON Schema validator.](assets/purpose.svg)
+![One public file format, lifecycle-policies.json, used by any repository, team or tool, and checked by any JSON Schema validator.](assets/purpose.svg)
 
 **Version 0.9, pre-release.** Published for testing before 1.0.
 
-A repository full of decision records, designs, plans and risks needs to say,
-for each kind of document, which statuses it may hold, how it moves between
-them, what triggers each move, and who approves it. The Lifecycle Policy
-Standard is one JSON format for saying that, so the answer can be read and
-checked by any tool rather than living in one tool's private config.
+Every team runs lifecycles: decision records go from proposed to approved,
+stories cross a Kanban board, runbooks are published and then reviewed after
+incidents, change requests wait for approval. For each kind of work someone
+has to say which statuses it may hold, how it moves between them, what
+triggers each move, and who approves it. The Lifecycle Policy Standard is one
+JSON format for saying that, so the answer can be read and checked by any tool
+rather than living in one tool's private configuration.
+
+The process, and the people involved, differ by kind of work. A decision
+record moves a few times a year and needs senior approval; a story moves
+several times a day and needs approval only at acceptance; a runbook is
+approved by the on-call staff who will rely on it. One format holds all of
+them. See [Workflows](workflows.md).
 
 ## Who it is for
 
@@ -24,16 +32,21 @@ checked by any tool rather than living in one tool's private config.
 - **Teams that may later connect to Jira** or another work tracker, and want
   their data to map cleanly when they do. See [Jira mapping](jira.md).
 
-Githerd and Gelato use it. Neither owns it.
+The standard is independent of any one tool. Every adopter, including the
+tools that first used it, follows the same published version.
 
 ## Adopt it in three steps
 
 ![Copy an example, set $schema to the released schema URL, and run any JSON Schema validator.](assets/adopt.svg)
 
 1. **Copy an example.** Start from
-   [`minimal.json`](0.9/examples/valid/minimal.json), or from the
+   [`minimal.json`](0.9/examples/valid/minimal.json), the
    [full example](0.9/examples/valid/full-dublin-core.json) that uses every
-   key, and save it as `lifecycle-policies.json` in your repository.
+   key, or the one closest to your kind of work:
+   [governance documents](0.9/examples/valid/governance-documents.json),
+   [a Kanban board](0.9/examples/valid/kanban-delivery.json), or
+   [runbooks and change requests](0.9/examples/valid/operational-runbooks.json).
+   Save it as `lifecycle-policies.json` in your repository.
 2. **Set `$schema`** to the released version:
 
    ```json
@@ -51,10 +64,11 @@ Githerd and Gelato use it. Neither owns it.
 ## Read more
 
 - [Specification](spec.md): every key, the conformance rules, versioning.
-- [Workflows](workflows.md): worked lifecycles for initiatives, decision
-  records, designs and risks.
+- [Workflows](workflows.md): worked lifecycles for governance documents,
+  Kanban delivery work, runbooks and change requests.
 - [Dublin Core](dublin-core.md): how every key maps to a Dublin Core term.
-- [Jira mapping](jira.md): how the data lines up with Jira workflows.
+- [Jira mapping](jira.md): how the data lines up with Jira, Jira Service
+  Management and Confluence.
 - [Models and APIs](models.md): generating C# and TypeScript, and describing
   REST APIs.
 
