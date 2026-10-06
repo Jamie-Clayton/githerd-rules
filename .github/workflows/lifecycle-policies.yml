@@ -1,5 +1,5 @@
 # Conformance for the Lifecycle Policy Standard, authored in this repository
-# under lifecycle-policies/ (Githerd adr-065 D14, design-097 S2).
+# under lifecycle-policies/.
 #
 # Every published version must:
 #   - compile as JSON Schema 2020-12 in strict mode,
@@ -15,8 +15,8 @@
 #     references (SVG check),
 #   - match what .github/explainers generates (the SVGs are generated).
 #
-# The rule pages in this repository are mirrored from Githerd and are not
-# checked here; Githerd's docs-rules-publish workflow owns them.
+# The compliance rule pages elsewhere in this repository are mirrored from
+# another repository by its own publish workflow, and are not checked here.
 
 name: lifecycle-policies
 

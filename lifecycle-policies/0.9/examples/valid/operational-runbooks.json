@@ -1,0 +1,85 @@
+{
+  "$schema": "https://jamie-clayton.github.io/githerd-rules/lifecycle-policies/0.9/lifecycle-policies.schema.json",
+  "title": "Operational runbooks and change requests",
+  "description": "Lifecycles for operations: runbooks that on-call engineers rely on during incidents, and change requests that go through change approval before production work. A runbook is never finished; it returns for review on a schedule and after every incident that used it. A change request is approved by people who do not do the work, modelled on a typical IT change-management workflow such as Jira Service Management change requests.",
+  "identifier": "https://example.org/policies/operational-runbooks",
+  "publisher": "example-org/platform-operations",
+  "modified": "2026-10-06T09:00:00+10:00",
+  "version": "1.0.0",
+  "language": "en-AU",
+  "coverage": "Platform operations runbooks and production changes",
+  "rights": "Apache-2.0",
+  "vocabulary": {
+    "roles": ["serviceOwner", "onCallLead", "siteReliabilityEngineer", "changeManager", "changeAdvisoryBoard"],
+    "triggeredBy": {
+      "active": [
+        "submitted",
+        "changes-requested",
+        "peer-review-passed",
+        "scheduled-review",
+        "incident-learning",
+        "reconfirmed",
+        "service-decommissioned",
+        "cab-approved",
+        "cab-declined",
+        "change-window-opened",
+        "implementation-complete",
+        "implementation-failed",
+        "review-complete"
+      ]
+    }
+  },
+  "policies": {
+    "runbook": {
+      "type": "runbook",
+      "field": "status",
+      "validStatuses": ["draft", "in-review", "published", "review-due", "retired"],
+      "transitions": [
+        { "from": "draft", "to": "in-review", "triggeredBy": ["submitted"] },
+        { "from": "in-review", "to": "draft", "triggeredBy": ["changes-requested"] },
+        { "from": "in-review", "to": "published", "triggeredBy": ["peer-review-passed"] },
+        { "from": "published", "to": "review-due", "triggeredBy": ["scheduled-review", "incident-learning"] },
+        { "from": "review-due", "to": "published", "triggeredBy": ["reconfirmed"] },
+        { "from": "review-due", "to": "in-review", "triggeredBy": ["submitted"] },
+        { "from": "*", "to": "retired", "triggeredBy": ["service-decommissioned"] }
+      ],
+      "approverRoles": ["serviceOwner", "onCallLead"],
+      "notes": "The people who will follow the runbook at 3am approve it, not the people who wrote it. Every incident that used the runbook sends it back for review.",
+      "extensions": {
+        "reviewIntervalDays": 180,
+        "confluence": {
+          "pageStatus": { "draft": "Rough draft", "in-review": "Ready for review", "published": "Verified", "review-due": "In progress" }
+        }
+      }
+    },
+    "change-request": {
+      "type": "change-request",
+      "field": "status",
+      "validStatuses": [
+        "planning",
+        "awaiting-approval",
+        "scheduled",
+        "implementing",
+        "post-implementation-review",
+        "completed",
+        "declined",
+        "failed"
+      ],
+      "transitions": [
+        { "from": "planning", "to": "awaiting-approval", "triggeredBy": ["submitted"] },
+        { "from": "awaiting-approval", "to": "scheduled", "triggeredBy": ["cab-approved"] },
+        { "from": "awaiting-approval", "to": "declined", "triggeredBy": ["cab-declined"] },
+        { "from": "scheduled", "to": "implementing", "triggeredBy": ["change-window-opened"] },
+        { "from": "implementing", "to": "post-implementation-review", "triggeredBy": ["implementation-complete", "implementation-failed"] },
+        { "from": "post-implementation-review", "to": "completed", "triggeredBy": ["review-complete"] },
+        { "from": "post-implementation-review", "to": "failed", "triggeredBy": ["review-complete"] }
+      ],
+      "approverRoles": ["changeManager", "changeAdvisoryBoard"],
+      "notes": "Approval is separate from implementation: the change advisory board approves, a site reliability engineer implements, and every change is reviewed afterwards, whether it worked or not.",
+      "extensions": {
+        "jira": { "issueType": "Change" },
+        "riskLevels": ["low", "medium", "high", "critical"]
+      }
+    }
+  }
+}

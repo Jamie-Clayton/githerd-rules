@@ -1,0 +1,98 @@
+{
+  "$schema": "https://jamie-clayton.github.io/githerd-rules/lifecycle-policies/0.9/lifecycle-policies.schema.json",
+  "title": "Kanban delivery workflow",
+  "description": "Lifecycles for delivery work on a Kanban board, modelled on a Jira Software Kanban project: stories and bugs pulled across Backlog, Selected for Development, In Progress, In Review and Done. Short-lived, moved many times a day by the people doing the work; only acceptance needs an approver. The field is 'status', as in Jira.",
+  "identifier": "https://example.org/policies/kanban-delivery",
+  "publisher": "example-org/payments-team",
+  "modified": "2026-10-06T09:00:00+10:00",
+  "version": "1.2.0",
+  "language": "en-AU",
+  "coverage": "Payments team board",
+  "rights": "Apache-2.0",
+  "vocabulary": {
+    "roles": ["productOwner", "teamLead", "developer", "reviewer"],
+    "triggeredBy": {
+      "active": [
+        "replenishment",
+        "pulled",
+        "review-requested",
+        "changes-requested",
+        "accepted",
+        "reopened",
+        "deprioritised",
+        "triaged",
+        "declined"
+      ]
+    }
+  },
+  "extensions": {
+    "board": { "type": "kanban", "wipLimits": { "in-progress": 4, "in-review": 3 } }
+  },
+  "policies": {
+    "story": {
+      "type": "story",
+      "field": "status",
+      "validStatuses": ["backlog", "selected-for-development", "in-progress", "in-review", "done"],
+      "transitions": [
+        { "from": "backlog", "to": "selected-for-development", "triggeredBy": ["replenishment"] },
+        { "from": "selected-for-development", "to": "in-progress", "triggeredBy": ["pulled"] },
+        {
+          "from": "in-progress",
+          "to": "in-review",
+          "triggeredBy": ["review-requested"],
+          "extensions": { "jira": { "transitionName": "Request review" } }
+        },
+        { "from": "in-review", "to": "in-progress", "triggeredBy": ["changes-requested"] },
+        {
+          "from": "in-review",
+          "to": "done",
+          "triggeredBy": ["accepted"],
+          "extensions": { "jira": { "transitionName": "Accept", "condition": "Only the product owner" } }
+        },
+        { "from": "done", "to": "in-progress", "triggeredBy": ["reopened"] },
+        { "from": "*", "to": "backlog", "triggeredBy": ["deprioritised"] }
+      ],
+      "approverRoles": ["productOwner"],
+      "notes": "Developers move stories freely up to In Review; only the product owner accepts a story as done.",
+      "extensions": {
+        "jira": {
+          "issueType": "Story",
+          "statusCategory": {
+            "backlog": "To Do",
+            "selected-for-development": "To Do",
+            "in-progress": "In Progress",
+            "in-review": "In Progress",
+            "done": "Done"
+          }
+        }
+      }
+    },
+    "bug": {
+      "type": "bug",
+      "field": "status",
+      "validStatuses": ["backlog", "in-progress", "in-review", "done", "wont-fix"],
+      "transitions": [
+        { "from": "backlog", "to": "in-progress", "triggeredBy": ["triaged", "pulled"] },
+        { "from": "in-progress", "to": "in-review", "triggeredBy": ["review-requested"] },
+        { "from": "in-review", "to": "in-progress", "triggeredBy": ["changes-requested"] },
+        { "from": "in-review", "to": "done", "triggeredBy": ["accepted"] },
+        { "from": "backlog", "to": "wont-fix", "triggeredBy": ["declined"] },
+        { "from": "done", "to": "in-progress", "triggeredBy": ["reopened"] }
+      ],
+      "approverRoles": ["teamLead"],
+      "notes": "The team lead accepts fixes and declines bugs that will not be fixed.",
+      "extensions": {
+        "jira": {
+          "issueType": "Bug",
+          "statusCategory": {
+            "backlog": "To Do",
+            "in-progress": "In Progress",
+            "in-review": "In Progress",
+            "done": "Done",
+            "wont-fix": "Done"
+          }
+        }
+      }
+    }
+  }
+}

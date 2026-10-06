@@ -20,15 +20,15 @@ const solidAccent = { fill: 'accent', fillStyle: 'solid', stroke: 'accent' };
 // 1. Purpose: one file format, many users. Hub layout; focal is the standard.
 const purpose = svg({
   title: 'Why a lifecycle policy standard',
-  desc: 'One public file format, lifecycle-policies.json, that Githerd, Gelato and any other repository or tool can pin and validate, with data that maps to Jira later.',
+  desc: 'One public file format, lifecycle-policies.json, for decision records, Kanban delivery work and runbooks alike, that any repository or tool can pin and validate, with data that maps to Jira later.',
   body: [
     title('Why a lifecycle policy standard?'),
     ellipse(800, 480, 620, 280, solidAccent),
     onAccent(800, 462, 'One public file format', { size: 40, weight: 700 }),
     onAccent(800, 515, 'lifecycle-policies.json', { size: 30, weight: 700 }),
-    box(110, 220, 330, 130), text(275, 278, 'Githerd', { size: 30, weight: 700 }), text(275, 320, 'pins 0.9', { size: 22 }),
-    box(1160, 220, 330, 130), text(1325, 278, 'Gelato', { size: 30, weight: 700 }), text(1325, 320, 'pins 0.9', { size: 22 }),
-    box(110, 640, 330, 130), text(275, 698, 'Any repo or tool', { size: 30, weight: 700 }), text(275, 740, 'same $schema', { size: 22 }),
+    box(110, 220, 330, 130), text(275, 278, 'Decisions', { size: 30, weight: 700 }), text(275, 320, 'records, designs', { size: 22 }),
+    box(1160, 220, 330, 130), text(1325, 278, 'Kanban board', { size: 30, weight: 700 }), text(1325, 320, 'stories, bugs', { size: 22 }),
+    box(110, 640, 330, 130), text(275, 698, 'Runbooks', { size: 30, weight: 700 }), text(275, 740, 'and change requests', { size: 22 }),
     box(1160, 640, 330, 130), text(1325, 698, 'Jira, one day', { size: 30, weight: 700 }), text(1325, 740, 'data maps cleanly', { size: 22 }),
     arrow(440, 300, 540, 395), arrow(1160, 300, 1060, 395),
     arrow(440, 700, 545, 575), arrow(1160, 700, 1055, 575, { dashed: true }),
@@ -134,8 +134,8 @@ const adopt = svg({
     onAccent(1385, 465, 'Conforms', { size: 38, weight: 700 }),
     checkMark(1385, 520, 44, { stroke: 'paper' }),
     starPerson(1385, 650, 1), text(1385, 760, 'you, in minutes', { size: 22 }),
-    highlight(330, 860, 940, 56),
-    text(800, 898, 'No Githerd or Gelato tooling needed', { size: 28 })
+    highlight(520, 860, 560, 56),
+    text(800, 898, 'No special tooling needed', { size: 28 })
   ].join('\n')
 });
 

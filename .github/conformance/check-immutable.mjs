@@ -1,5 +1,5 @@
 // A released version of the Lifecycle Policy Standard never changes: every
-// adopter's vendored copy and $schema pin depend on it (adr-065 D2).
+// adopter's vendored copy and $schema pin depend on it.
 //
 // For each tag lifecycle-policies-vMAJOR.MINOR.PATCH with MAJOR >= 1, the
 // folder lifecycle-policies/MAJOR.MINOR/ must be byte-identical at HEAD to what
