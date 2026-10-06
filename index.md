@@ -51,3 +51,11 @@ blocks it.
   records the code it replaced under its Formerly heading, and the SARIF
   output carries the same mapping as `deprecatedIds`. Nothing emits the
   retired codes any more; they resolve, they do not fire.
+
+## Lifecycle Policy Standard
+
+This site also publishes the
+[Lifecycle Policy Standard](https://jamie-clayton.github.io/githerd-rules/lifecycle-policies/): a public,
+tool-independent format for the statuses, transitions and approvers of the
+documents in a repository, with a JSON Schema any application can validate
+against. It is authored in this site's repository, not generated from Githerd.

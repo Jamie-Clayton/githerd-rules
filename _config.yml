@@ -8,10 +8,11 @@
 # scripts/RulesBaseUrl.config.json, because every SARIF helpUri the
 # validator emits is {RulesBaseUrl}/rules/{id} and the rules collection
 # permalink is what makes that path dereference.
-title: Githerd Compliance Rules
+title: Githerd Compliance Rules and Lifecycle Policy Standard
 description: >-
   Canonical documentation for the GHFM front-matter diagnostic rules emitted
-  by the Githerd harness metadata validator.
+  by the Githerd harness metadata validator, and the Lifecycle Policy
+  Standard: a public format for document lifecycle policies.
 url: https://jamie-clayton.github.io
 baseurl: /githerd-rules
 
