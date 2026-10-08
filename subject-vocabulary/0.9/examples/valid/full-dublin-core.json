@@ -1,0 +1,100 @@
+{
+  "$schema": "https://jamie-clayton.github.io/githerd-rules/subject-vocabulary/0.9/subject-vocabulary.schema.json",
+  "title": "Every Dublin Core term and every SKOS term the standard maps",
+  "description": "Used by the conformance suite to prove context.jsonld maps each term.",
+  "identifier": "ark:/99999/sv8000p0000000001",
+  "creator": "Example maintainer",
+  "contributor": [
+    "Example reviewer"
+  ],
+  "publisher": "example.org",
+  "subject": [
+    "ability:governability"
+  ],
+  "created": "2026-10-01",
+  "modified": "2026-10-08T21:00:00+10:00",
+  "version": "1.0.0",
+  "source": "https://example.org/previous-vocabulary.json",
+  "language": "en-AU",
+  "coverage": "docs/**",
+  "rights": "Apache-2.0",
+  "references": [
+    "https://www.w3.org/TR/skos-reference/"
+  ],
+  "conceptBase": "https://example.org/repository/subjects/",
+  "concepts": [
+    {
+      "notation": "theme:value-reporting",
+      "prefLabel": "Value reporting",
+      "definition": "You can show what delivered work was worth.",
+      "scopeNote": "Return on investment and effort actuals. Not live status (observability).",
+      "audience": "customer",
+      "altLabel": [
+        "roi reporting"
+      ],
+      "hiddenLabel": [
+        "effort actuals"
+      ],
+      "broader": [
+        "ability:observability"
+      ],
+      "narrower": [
+        "theme:effort-actuals"
+      ],
+      "related": [
+        "ability:governability"
+      ],
+      "closeMatch": [
+        {
+          "scheme": "example-scheme",
+          "notation": "value",
+          "informative": true
+        }
+      ],
+      "extensions": {
+        "example:owner": "finance"
+      }
+    },
+    {
+      "notation": "theme:effort-actuals",
+      "prefLabel": "Effort actuals",
+      "broader": [
+        "theme:value-reporting"
+      ]
+    }
+  ],
+  "hints": {
+    "ability:observability": {
+      "hiddenLabel": [
+        "burn-down"
+      ]
+    }
+  },
+  "components": [
+    {
+      "notation": "component:metrics",
+      "prefLabel": "Metrics",
+      "paths": [
+        "metrics/**"
+      ],
+      "broader": [
+        "theme:value-reporting"
+      ]
+    }
+  ],
+  "legacy": {
+    "roi": "theme:value-reporting"
+  },
+  "retired": [
+    {
+      "notation": "theme:roi",
+      "isReplacedBy": "theme:value-reporting",
+      "deprecatedAt": "2026-10-01",
+      "removedAt": "2027-04-01",
+      "rationale": "Renamed."
+    }
+  ],
+  "extensions": {
+    "example:reviewCadence": "quarterly"
+  }
+}

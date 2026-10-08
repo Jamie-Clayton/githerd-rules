@@ -1,0 +1,14 @@
+{
+  "$schema": "https://jamie-clayton.github.io/githerd-rules/subject-vocabulary/0.9/scheme.schema.json",
+  "title": "Example core scheme",
+  "identifier": "https://example.org/scheme.json",
+  "modified": "2026-10-08",
+  "concepts": [
+    {
+      "notation": "ability:alpha",
+      "prefLabel": "Alpha",
+      "scopeNote": "Only alpha.",
+      "audience": "customer"
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "$schema": "https://jamie-clayton.github.io/githerd-rules/subject-vocabulary/0.9/subject-vocabulary.schema.json",
+  "title": "Local themes, components, hints and a legacy map",
+  "identifier": "ark:/99999/sv8000p0000000000",
+  "modified": "2026-10-08T21:00:00+10:00",
+  "description": "A repository that groups its own work under local themes, maps two code areas to components, and maps the tag strings it used before adopting.",
+  "conceptBase": "https://example.org/repository/subjects/",
+  "concepts": [
+    {
+      "notation": "theme:dashboard-ux",
+      "prefLabel": "Dashboard UX",
+      "definition": "How the dashboard looks and feels to the person using it.",
+      "broader": [
+        "ability:discoverability"
+      ],
+      "altLabel": [
+        "dashboard usability"
+      ],
+      "hiddenLabel": [
+        "detail panel",
+        "palette"
+      ]
+    },
+    {
+      "notation": "theme:value-reporting",
+      "prefLabel": "Value reporting",
+      "broader": [
+        "ability:observability"
+      ],
+      "hiddenLabel": [
+        "roi",
+        "effort actuals"
+      ]
+    }
+  ],
+  "hints": {
+    "ability:traceability": {
+      "hiddenLabel": [
+        "typed edge"
+      ]
+    }
+  },
+  "components": [
+    {
+      "notation": "component:dashboard-client",
+      "prefLabel": "Dashboard client",
+      "paths": [
+        "app/Dashboard-Client/**"
+      ],
+      "broader": [
+        "theme:dashboard-ux"
+      ]
+    },
+    {
+      "notation": "component:release-scripts",
+      "paths": [
+        "scripts/release/**"
+      ],
+      "broader": [
+        "ability:engineering-quality"
+      ]
+    }
+  ],
+  "legacy": {
+    "dashboard": "theme:dashboard-ux",
+    "lineage": "ability:traceability"
+  }
+}

@@ -1,0 +1,103 @@
+{
+  "$schema": "https://jamie-clayton.github.io/githerd-rules/subject-vocabulary/0.9/scheme.schema.json",
+  "title": "Subject Vocabulary core scheme",
+  "description": "Seven abilities a person using the product can rely on, and one internal concept for how the product itself is built. Every adopting repository shares them; each adds its own themes and components underneath. ISO/IEC 25010:2023 matches are informative and cite the characteristic name only.",
+  "identifier": "https://jamie-clayton.github.io/githerd-rules/subject-vocabulary/0.9/scheme.json",
+  "publisher": "githerd-rules",
+  "created": "2026-10-08",
+  "modified": "2026-10-08",
+  "version": "0.9.0",
+  "language": "en",
+  "rights": "Apache-2.0",
+  "references": [
+    "https://www.w3.org/TR/skos-reference/",
+    "https://www.dublincore.org/specifications/dublin-core/dcmi-terms/"
+  ],
+  "concepts": [
+    {
+      "notation": "ability:governability",
+      "prefLabel": "Governability",
+      "definition": "Your documents follow an agreed lifecycle: each has an owner, the right people sign off, and its metadata stays valid as it moves from draft to archived.",
+      "scopeNote": "Lifecycles, sign-off, policies, registers and front-matter validity. Not how documents link to each other (traceability) or how they are found (discoverability). A narrower Authoring concept, ability:authoring, is reserved for a later version.",
+      "audience": "customer",
+      "altLabel": [ "governance", "authorability", "compliance" ],
+      "hiddenLabel": [ "lifecycle", "sign-off", "approval", "policy register", "front matter", "dublin core", "validator", "template" ],
+      "related": [ "ability:traceability" ]
+    },
+    {
+      "notation": "ability:traceability",
+      "prefLabel": "Traceability",
+      "definition": "You can follow any piece of work from the question that started it to the change that answered it.",
+      "scopeNote": "Identifiers, links, lineage and history. Not search or navigation (discoverability).",
+      "audience": "customer",
+      "altLabel": [ "lineage", "provenance", "identifiability" ],
+      "hiddenLabel": [ "ark", "identifier", "mint", "backlink", "supersede", "typed relation", "cross-reference" ],
+      "related": [ "ability:governability", "ability:discoverability" ],
+      "closeMatch": [ { "scheme": "iso-iec-25010-2023", "notation": "accountability", "informative": true } ]
+    },
+    {
+      "notation": "ability:discoverability",
+      "prefLabel": "Discoverability",
+      "definition": "You can find the work you need, and move between related pieces, without knowing where it lives.",
+      "scopeNote": "Search, filters, graph and board views, and navigation. Not a summary of the state of work (observability).",
+      "audience": "customer",
+      "altLabel": [ "findability", "navigation", "usability" ],
+      "hiddenLabel": [ "search", "filter", "graph view", "kanban", "timeline", "facet", "detail panel" ],
+      "related": [ "ability:observability", "ability:traceability" ],
+      "closeMatch": [ { "scheme": "iso-iec-25010-2023", "notation": "interaction capability", "informative": true } ]
+    },
+    {
+      "notation": "ability:observability",
+      "prefLabel": "Observability",
+      "definition": "You can see the state of all your work at a glance, and notice when something stalls.",
+      "scopeNote": "Dashboards, metrics, reports, status roll-ups and health. Not finding one particular item (discoverability).",
+      "audience": "customer",
+      "altLabel": [ "visibility", "reporting" ],
+      "hiddenLabel": [ "dashboard", "metric", "report", "roundup", "health", "trend" ],
+      "related": [ "ability:discoverability" ]
+    },
+    {
+      "notation": "ability:interoperability",
+      "prefLabel": "Interoperability",
+      "definition": "It works with the tools and agents you already use, through open formats and documented interfaces.",
+      "scopeNote": "APIs, MCP tools, file formats, exports and agent integrations. Not how the product itself is built and released (engineering quality).",
+      "audience": "customer",
+      "altLabel": [ "integration", "automatability" ],
+      "hiddenLabel": [ "mcp", "api", "typespec", "openapi", "jira", "export", "sarif", "agent skill", "hook" ],
+      "closeMatch": [ { "scheme": "iso-iec-25010-2023", "notation": "compatibility", "informative": true } ]
+    },
+    {
+      "notation": "ability:securability",
+      "prefLabel": "Securability",
+      "definition": "It is safe by default: secrets, credentials and access are protected, and risky actions ask before they act.",
+      "scopeNote": "Threats, secrets, access control, vulnerable dependencies and safe defaults. Not whether document metadata is valid (governability).",
+      "audience": "customer",
+      "altLabel": [ "security" ],
+      "hiddenLabel": [ "credential", "secret", "xss", "owasp", "dependabot", "vulnerability", "threat model", "permission" ],
+      "closeMatch": [ { "scheme": "iso-iec-25010-2023", "notation": "security", "informative": true } ]
+    },
+    {
+      "notation": "ability:repository-hygiene",
+      "prefLabel": "Repository hygiene",
+      "definition": "Your branches, worktrees and stashes stay tidy, and merged work is cleaned up without losing anything.",
+      "scopeNote": "Branch, worktree and stash management and clean-up. Not the documents inside the repository (governability).",
+      "audience": "customer",
+      "altLabel": [ "repository operability", "git hygiene" ],
+      "hiddenLabel": [ "worktree", "branch", "stash", "merged branch", "prune", "cleanup plan" ]
+    },
+    {
+      "notation": "ability:engineering-quality",
+      "prefLabel": "Engineering quality",
+      "definition": "The product itself is tested, releasable, maintainable and fast.",
+      "scopeNote": "Tests, continuous integration, releases, packaging, refactoring and performance of the product. Internal: customer-facing views may hide it.",
+      "audience": "internal",
+      "altLabel": [ "testability", "deployability", "maintainability", "performance" ],
+      "hiddenLabel": [ "pester", "playwright", "e2e", "bdd", "reqnroll", "release", "nuget", "refactor", "tech debt", "latency" ],
+      "closeMatch": [
+        { "scheme": "iso-iec-25010-2023", "notation": "maintainability", "informative": true },
+        { "scheme": "iso-iec-25010-2023", "notation": "performance efficiency", "informative": true },
+        { "scheme": "iso-iec-25010-2023", "notation": "reliability", "informative": true }
+      ]
+    }
+  ]
+}

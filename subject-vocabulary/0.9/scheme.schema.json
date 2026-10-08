@@ -1,0 +1,139 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://jamie-clayton.github.io/githerd-rules/subject-vocabulary/0.9/scheme.schema.json",
+  "$comment": "Subject Vocabulary Standard 0.9, a pre-release for testing before 1.0. SPDX-License-Identifier: Apache-2.0. Copyright 2026 Jamie Clayton. 0.x versions may still change within their folder; from 1.0, released versions are immutable and changes ship as a new major.minor folder. Rules that JSON Schema cannot express (SV001 onwards) are defined in the specification and checked by conformance tooling. The concept shape follows W3C SKOS; see context.jsonld.",
+  "title": "Subject vocabulary core scheme",
+  "description": "The core scheme the standard publishes: the abilities every adopting repository shares, each a SKOS concept carried in Dublin Core subject as ability:<name>. Repositories pin it and may only add to it, in their adoption register. Its $defs also define the concept shape the adoption register and the suggestions file reuse.",
+  "type": "object",
+  "required": [
+    "$schema",
+    "title",
+    "identifier",
+    "modified",
+    "concepts"
+  ],
+  "properties": {
+    "$schema": {
+      "description": "The released version of this standard the scheme conforms to (dcterms:conformsTo).",
+      "type": "string",
+      "pattern": "^https://jamie-clayton\\.github\\.io/githerd-rules/subject-vocabulary/[0-9]+\\.[0-9]+/scheme\\.schema\\.json$"
+    },
+    "title": { "description": "Name of the scheme (dcterms:title).", "$ref": "#/$defs/text" },
+    "description": { "description": "What the scheme organises (dcterms:description).", "$ref": "#/$defs/text" },
+    "identifier": { "description": "Persistent identifier of the scheme, as a URI (dcterms:identifier).", "$ref": "#/$defs/uri" },
+    "publisher": { "description": "Who publishes the scheme (dcterms:publisher).", "$ref": "#/$defs/text" },
+    "created": { "description": "When the scheme was first created (dcterms:created).", "$ref": "#/$defs/dateOrDateTime" },
+    "modified": { "description": "When the scheme last changed (dcterms:modified).", "$ref": "#/$defs/dateOrDateTime" },
+    "version": { "description": "The scheme's own version (dcterms:hasVersion).", "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "language": { "description": "BCP 47 language tag for labels and definitions (dcterms:language).", "type": "string", "pattern": "^[A-Za-z]{2,3}(-[A-Za-z0-9]{2,8})*$" },
+    "rights": { "description": "Licence of the scheme, ideally an SPDX identifier (dcterms:rights).", "$ref": "#/$defs/text" },
+    "references": { "description": "Related resources (dcterms:references).", "$ref": "#/$defs/textList" },
+    "concepts": {
+      "description": "The scheme's top concepts (skos:hasTopConcept).",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "items": { "$ref": "#/$defs/coreConcept" }
+    },
+    "retired": {
+      "description": "Concepts no longer offered, each naming its replacement.",
+      "type": "array",
+      "maxItems": 100,
+      "items": { "$ref": "#/$defs/retiredConcept" }
+    },
+    "extensions": { "$ref": "#/$defs/extensions" }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "text": { "type": "string", "minLength": 1 },
+    "textList": { "type": "array", "items": { "$ref": "#/$defs/text" }, "uniqueItems": true },
+    "uri": { "type": "string", "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:[^\\s]+$" },
+    "date": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+    "dateOrDateTime": {
+      "description": "A calendar date, or a date-time with an explicit offset. A date-time without an offset is rejected because it is ambiguous.",
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}(T[0-9]{2}:[0-9]{2}(:[0-9]{2}(\\.[0-9]+)?)?(Z|[+-][0-9]{2}:[0-9]{2}))?$"
+    },
+    "notation": {
+      "description": "The token written in front-matter subject (skos:notation): a scheme prefix, a colon, and a lowercase name. The standard uses ability: (core), theme: and component: (local); SV004 checks which prefix belongs where.",
+      "type": "string",
+      "maxLength": 100,
+      "pattern": "^[a-z][a-z0-9]*:[a-z][a-z0-9-]*$"
+    },
+    "notationList": {
+      "type": "array",
+      "maxItems": 50,
+      "items": { "$ref": "#/$defs/notation" },
+      "uniqueItems": true
+    },
+    "label": {
+      "description": "A label or hint, matched as a literal string, never as a pattern.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "labelList": {
+      "type": "array",
+      "maxItems": 100,
+      "items": { "$ref": "#/$defs/label" },
+      "uniqueItems": true
+    },
+    "conceptBody": {
+      "description": "Every key a concept may carry. coreConcept and the adoption register's localConcept each say which are required.",
+      "type": "object",
+      "properties": {
+        "notation": { "$ref": "#/$defs/notation" },
+        "prefLabel": { "description": "Display name (skos:prefLabel).", "$ref": "#/$defs/label" },
+        "definition": { "description": "The promise the concept makes to the person using the product (skos:definition).", "type": "string", "minLength": 1, "maxLength": 500 },
+        "scopeNote": { "description": "What is in and out of scope, naming the nearest neighbour (skos:scopeNote).", "type": "string", "minLength": 1, "maxLength": 500 },
+        "audience": { "description": "Whether customer-facing views show the concept (dcterms:audience).", "enum": [ "customer", "internal" ] },
+        "altLabel": { "description": "Other names for the concept, including names it absorbed; a strong suggester signal (skos:altLabel).", "$ref": "#/$defs/labelList" },
+        "hiddenLabel": { "description": "Hints for the suggester, never displayed (skos:hiddenLabel).", "$ref": "#/$defs/labelList" },
+        "broader": { "description": "The more general concept (skos:broader).", "$ref": "#/$defs/notationList" },
+        "narrower": { "description": "More specific concepts (skos:narrower).", "$ref": "#/$defs/notationList" },
+        "related": { "description": "Concepts that often travel with this one (skos:related).", "$ref": "#/$defs/notationList" },
+        "closeMatch": {
+          "description": "Comparable concepts in other schemes (skos:closeMatch). Informative only; cite a characteristic's name, never another standard's text.",
+          "type": "array",
+          "maxItems": 20,
+          "items": {
+            "type": "object",
+            "required": [ "scheme", "notation" ],
+            "properties": {
+              "scheme": { "$ref": "#/$defs/text" },
+              "notation": { "$ref": "#/$defs/text" },
+              "informative": { "type": "boolean" }
+            },
+            "additionalProperties": false
+          }
+        },
+        "extensions": { "$ref": "#/$defs/extensions" }
+      }
+    },
+    "coreConcept": {
+      "type": "object",
+      "$ref": "#/$defs/conceptBody",
+      "$comment": "Shapes come from conceptBody; the true entries only declare which keys are required here.",
+      "properties": { "notation": true, "prefLabel": true, "definition": true, "scopeNote": true, "audience": true },
+      "required": [ "notation", "prefLabel", "definition", "scopeNote", "audience" ],
+      "unevaluatedProperties": false
+    },
+    "retiredConcept": {
+      "description": "A concept no longer offered. deprecatedAt to removedAt is its validity window (dcterms:valid).",
+      "type": "object",
+      "required": [ "notation", "isReplacedBy", "deprecatedAt" ],
+      "properties": {
+        "notation": { "$ref": "#/$defs/notation" },
+        "isReplacedBy": { "description": "The active concept to use instead (dcterms:isReplacedBy).", "$ref": "#/$defs/notation" },
+        "deprecatedAt": { "$ref": "#/$defs/date" },
+        "removedAt": { "$ref": "#/$defs/date" },
+        "rationale": { "$ref": "#/$defs/text" }
+      },
+      "additionalProperties": false
+    },
+    "extensions": {
+      "description": "Repository-specific data the standard does not define, kept apart so every other key stays strictly checked. Any keys and values. Consumers that do not understand an extension ignore it.",
+      "type": "object"
+    }
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "$schema": "https://jamie-clayton.github.io/githerd-rules/subject-vocabulary/0.9/suggestions.schema.json",
+  "scheme": "0.9",
+  "documents": [
+    {
+      "path": "docs/adr/2026-10-01-typed-links.md",
+      "existing": [
+        "lineage"
+      ],
+      "suggestions": [
+        {
+          "notation": "ability:traceability",
+          "score": 0.62,
+          "reasons": [
+            {
+              "signal": "title",
+              "field": "title",
+              "match": "lineage",
+              "weight": 3
+            }
+          ],
+          "accepted": true,
+          "acceptedBy": "Example maintainer",
+          "acceptedAt": "2026-10-08T21:30:00+10:00"
+        },
+        {
+          "notation": "ability:governability",
+          "score": 0.4,
+          "reasons": [
+            {
+              "signal": "title",
+              "field": "title",
+              "match": "lineage",
+              "weight": 3
+            }
+          ],
+          "accepted": false
+        }
+      ]
+    }
+  ]
+}

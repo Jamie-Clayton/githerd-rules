@@ -1,0 +1,22 @@
+{
+  "$schema": "https://jamie-clayton.github.io/githerd-rules/subject-vocabulary/0.9/subject-vocabulary.schema.json",
+  "title": "Example repository subject vocabulary",
+  "identifier": "ark:/99999/sv8000p0000000000",
+  "modified": "2026-10-08T21:00:00+10:00",
+  "conceptBase": "https://example.org/repository/subjects/",
+  "concepts": [
+    {
+      "notation": "theme:dashboard-ux",
+      "prefLabel": "Dashboard UX",
+      "broader": [
+        "ability:discoverability"
+      ],
+      "hiddenLabel": [
+        "detail panel"
+      ]
+    }
+  ],
+  "legacy": {
+    "traceability": "theme:dashboard-ux"
+  }
+}

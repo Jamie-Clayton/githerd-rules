@@ -1,0 +1,24 @@
+{
+  "$schema": "https://jamie-clayton.github.io/githerd-rules/subject-vocabulary/0.9/suggestions.schema.json",
+  "scheme": "0.9",
+  "documents": [
+    {
+      "path": "docs/a.md",
+      "existing": [],
+      "suggestions": [
+        {
+          "notation": "ability:traceability",
+          "score": 0.62,
+          "reasons": [
+            {
+              "signal": "llm-guess",
+              "field": "body",
+              "match": "x",
+              "weight": 1
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

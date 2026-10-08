@@ -1,0 +1,22 @@
+{
+  "$schema": "https://jamie-clayton.github.io/githerd-rules/subject-vocabulary/0.9/scheme.schema.json",
+  "title": "Example core scheme",
+  "identifier": "https://example.org/scheme.json",
+  "modified": "2026-10-08",
+  "concepts": [
+    {
+      "notation": "ability:alpha",
+      "prefLabel": "Alpha",
+      "definition": "You can rely on alpha.",
+      "scopeNote": "Only alpha.",
+      "audience": "customer"
+    },
+    {
+      "notation": "theme:beta",
+      "prefLabel": "Beta",
+      "definition": "You can rely on beta.",
+      "scopeNote": "Only beta.",
+      "audience": "customer"
+    }
+  ]
+}
