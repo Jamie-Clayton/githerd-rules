@@ -1,0 +1,156 @@
+# Conformance for every standard authored in this repository: each top-level
+# folder holding <major.minor>/ version folders, such as lifecycle-policies/
+# (see .github/conformance/standards.mjs). A new standard needs no edit here.
+#
+# Every published version of every standard must:
+#   - compile as JSON Schema 2020-12 in strict mode, each schema at its
+#     published $id,
+#   - pass its conformance examples under two independent validators (Ajv and
+#     JsonSchema.Net) that agree example by example,
+#   - pass the standard's own profile checks (.github/conformance/profiles/),
+#     such as the Lifecycle Policy Standard's Dublin Core mapping,
+#   - never change after it is tagged <standard>-vX.Y.Z, from 1.0 on
+#     (0.x versions are pre-releases for testing and may still change),
+#   - pass the Pester tests of any reference implementation it ships.
+#
+# The pages and explainer SVGs of every standard must:
+#   - link only to files that exist (internal links),
+#   - carry a title and desc, and no script, event handlers or external
+#     references (SVG check),
+#   - match what .github/explainers generates (the SVGs are generated).
+#
+# The compliance rule pages are mirrored from another repository by its own
+# publish workflow and are not checked here; they are the only paths ignored,
+# so a change to any standard, the tooling or the licence always runs this.
+
+name: standards
+
+on:
+  pull_request:
+    paths-ignore:
+      - 'GHFM*.content.md'
+      - 'rules/**'
+      - '_rules/**'
+      - 'index.md'
+      - '_config.yml'
+  push:
+    branches: [main]
+    paths-ignore:
+      - 'GHFM*.content.md'
+      - 'rules/**'
+      - '_rules/**'
+      - 'index.md'
+      - '_config.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: standards-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  conformance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: .github/conformance
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Full history and tags: the immutability check diffs each release tag.
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: |
+            .github/conformance/package-lock.json
+            .github/explainers/package-lock.json
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Licence files are present
+        working-directory: .
+        run: |
+          test -s LICENSE.md || { echo "::error title=LICENSE.md missing::"; exit 1; }
+          grep -q 'Apache License' LICENSE.md || { echo "::error title=LICENSE.md is not Apache-2.0::"; exit 1; }
+          test -s NOTICE || { echo "::error title=NOTICE missing::"; exit 1; }
+
+      - name: Install
+        run: npm ci
+
+      - name: Standards found
+        run: |
+          standards=$(node standards.mjs --list --root "$GITHUB_WORKSPACE")
+          test -n "$standards" || { echo "::error title=No standards found::no <standard>/<major.minor>/ folder"; exit 1; }
+          echo "$standards" | sed 's/^/standard: /'
+
+      - name: Check tests
+        run: node --test "test/*.test.mjs"
+
+      - name: Conformance (Ajv, profiles, semantic rules)
+        run: node conformance.mjs --root "$GITHUB_WORKSPACE" --out "$RUNNER_TEMP/ajv-results.json"
+
+      - name: Conformance (JsonSchema.Net)
+        run: dotnet run --project dotnet/Conformance.csproj -c Release -- --root "$GITHUB_WORKSPACE" --out "$RUNNER_TEMP/dotnet-results.json"
+
+      - name: The two validators agree
+        run: node compare.mjs "$RUNNER_TEMP/ajv-results.json" "$RUNNER_TEMP/dotnet-results.json"
+
+      - name: The two validators find and agree on several standards
+        # The repository may publish one standard; this fixture holds two, one
+        # with a second schema whose examples sit in examples/<stem>/.
+        run: |
+          node conformance.mjs --root test/fixtures/multi-standard --out "$RUNNER_TEMP/fixture-ajv.json"
+          dotnet run --project dotnet/Conformance.csproj -c Release --no-build -- --root test/fixtures/multi-standard --out "$RUNNER_TEMP/fixture-dotnet.json"
+          node compare.mjs "$RUNNER_TEMP/fixture-ajv.json" "$RUNNER_TEMP/fixture-dotnet.json"
+
+      - name: Released versions are unchanged
+        run: node check-immutable.mjs --root "$GITHUB_WORKSPACE"
+
+      - name: Reference implementation tests (Pester)
+        # Any *.Tests.ps1 shipped inside a standard's version folder, such as
+        # a reference suggester's. None yet is a pass, not a failure.
+        working-directory: .
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $tests = @(
+            Get-ChildItem -Directory | Where-Object Name -NotMatch '^[._]' |
+              ForEach-Object { Get-ChildItem -LiteralPath $_.FullName -Directory | Where-Object Name -Match '^[0-9]+\.[0-9]+$' } |
+              ForEach-Object { Get-ChildItem -LiteralPath $_.FullName -Recurse -File -Filter '*.Tests.ps1' }
+          )
+          if ($tests.Count -eq 0) { 'No Pester tests in any standard version folder.'; return }
+          if (-not (Get-Module Pester -ListAvailable | Where-Object Version -GE ([version]'5.5.0'))) {
+            Install-Module Pester -MinimumVersion 5.5.0 -Scope CurrentUser -Force -SkipPublisherCheck
+          }
+          Import-Module Pester -MinimumVersion 5.5.0
+          $config = New-PesterConfiguration
+          $config.Run.Path = @($tests.FullName)
+          $config.Run.Exit = $true
+          $config.Output.Verbosity = 'Detailed'
+          Invoke-Pester -Configuration $config
+
+      - name: Explainer SVGs are safe and accessible
+        run: node check-svg.mjs --root "$GITHUB_WORKSPACE"
+
+      - name: Internal links resolve
+        run: node check-links.mjs --root "$GITHUB_WORKSPACE"
+
+      - name: Explainer SVGs match their generator
+        working-directory: .github/explainers
+        run: |
+          npm ci
+          for standard in $(node ../conformance/standards.mjs --list --root "$GITHUB_WORKSPACE"); do
+            test -d "$GITHUB_WORKSPACE/$standard/assets" || continue
+            node explainers.mjs --standard "$standard" --out "$RUNNER_TEMP/explainers/$standard" || exit 1
+            diff -r "$RUNNER_TEMP/explainers/$standard" "$GITHUB_WORKSPACE/$standard/assets" || {
+              echo "::error title=Explainer SVGs are stale::Regenerate with: node .github/explainers/explainers.mjs --standard $standard"
+              exit 1
+            }
+          done
