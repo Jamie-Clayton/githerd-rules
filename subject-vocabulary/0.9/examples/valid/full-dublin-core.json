@@ -21,6 +21,11 @@
   "references": [
     "https://www.w3.org/TR/skos-reference/"
   ],
+  "core": "extend",
+  "prefixes": [
+    "theme",
+    "component"
+  ],
   "conceptBase": "https://example.org/repository/subjects/",
   "concepts": [
     {
@@ -43,6 +48,12 @@
       ],
       "related": [
         "ability:governability"
+      ],
+      "exactMatch": [
+        {
+          "scheme": "example-scheme",
+          "notation": "value-reporting"
+        }
       ],
       "closeMatch": [
         {

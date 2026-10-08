@@ -3,26 +3,38 @@
 // another, or a register with the core scheme it pins. Run only on documents
 // that are already schema-valid.
 //
-//   SV001  Every broader, narrower and related notation, and every hints key
-//          outside ability:, resolves to an active core or local concept; every
-//          broader chain ends at a core concept with no broader, with no cycle.
-//   SV002  A register never adds or redefines an ability: concept: no local
-//          concept, component or hint uses an ability: notation the core
-//          scheme does not define, and no local concept repeats a core one.
+//   A register either extends the core scheme (core: extend, the default) or
+//   replaces it with a private set (core: replace). The resolved vocabulary is
+//   the core concepts plus the register's under extend, and the register's
+//   alone under replace. Local concepts use the prefixes the register
+//   declares (theme and component by default); ability: always means the
+//   core scheme.
+//
+//   SV001  Every broader, narrower and related notation, and every hints key,
+//          resolves to an active concept of the resolved vocabulary; every
+//          broader chain ends at a top concept (one with no broader), with no
+//          cycle. Under replace at least one local top concept exists.
+//   SV002  ability: is reserved for the core scheme. Under extend no local
+//          concept, component or hint adds an ability: notation or repeats a
+//          core one, and a core exactMatch is refused (use broader). Under
+//          replace no local concept, component, hint key or legacy target uses
+//          ability: at all. Every match to scheme core names an active
+//          ability: concept of the pinned scheme.
 //   SV003  No notation is both active and retired; every isReplacedBy names an
 //          active concept.
-//   SV004  Core concepts use ability:; local concepts and components use
-//          theme: or component:.
+//   SV004  Core concepts use ability:; local concepts and components use a
+//          prefix the register declares.
 //   SV005  No altLabel or legacy key equals another concept's notation or
-//          prefLabel, compared case-insensitively, so a legacy string or
-//          absorbed name leads to exactly one concept.
+//          prefLabel in the resolved vocabulary, compared case-insensitively,
+//          so a legacy string or absorbed name leads to exactly one concept.
 //   SV006  A register's $schema names a version the standard has published.
 //
 // Each concept or entry raises at most one finding per rule, in that order,
 // so a single mistake is reported once.
 
 const CORE = 'ability:';
-const LOCAL = ['theme:', 'component:'];
+const DEFAULT_PREFIXES = ['theme', 'component'];
+const prefixOf = (notation) => notation.slice(0, notation.indexOf(':'));
 const fold = (text) => text.normalize('NFC').toLowerCase().trim();
 
 function makeFindings() {
@@ -105,6 +117,8 @@ export function checkScheme(scheme) {
  */
 export function checkRegister(register, scheme, publishedVersions) {
   const { findings, add } = makeFindings();
+  const replace = register.core === 'replace';
+  const declared = new Set(register.prefixes ?? DEFAULT_PREFIXES);
   const core = new Map(scheme.concepts.map((c) => [c.notation, c]));
   const locals = (register.concepts ?? []).map((c, i) => ({ concept: c, path: `/concepts/${i}` }))
     .concat((register.components ?? []).map((c, i) => ({ concept: c, path: `/components/${i}` })));
@@ -114,44 +128,62 @@ export function checkRegister(register, scheme, publishedVersions) {
   for (const entry of locals) {
     const { notation } = entry.concept;
     if (notation.startsWith(CORE)) {
-      add('SV002', `${entry.path}/notation`, core.has(notation)
-        ? `'${notation}' is a core concept; a register may add hints to it but not redefine it.`
-        : `'${notation}' adds an ability; only the core scheme defines abilities.`);
-    } else if (!LOCAL.some((prefix) => notation.startsWith(prefix))) {
-      add('SV004', `${entry.path}/notation`, `Local notation '${notation}' must use the theme: or component: prefix.`);
+      add('SV002', `${entry.path}/notation`, replace
+        ? `'${notation}': this register replaces the core, so it may not use ability: notations.`
+        : core.has(notation)
+          ? `'${notation}' is a core concept; a register may add hints to it but not redefine it.`
+          : `'${notation}' adds an ability; only the core scheme defines abilities.`);
+    } else if (!declared.has(prefixOf(notation))) {
+      add('SV004', `${entry.path}/notation`, `'${notation}' uses the prefix '${prefixOf(notation)}', which the register does not declare in prefixes.`);
     } else {
       valid.push(entry);
     }
   }
   for (const key of Object.keys(register.hints ?? {})) {
-    if (key.startsWith(CORE) && !core.has(key)) add('SV002', `/hints/${key}`, `Hint for '${key}', which the core scheme does not define.`);
+    if (!key.startsWith(CORE)) continue;
+    if (replace) add('SV002', `/hints/${key}`, `Hint for '${key}': this register replaces the core.`);
+    else if (!core.has(key)) add('SV002', `/hints/${key}`, `Hint for '${key}', which the core scheme does not define.`);
+  }
+  if (replace) {
+    for (const [key, target] of Object.entries(register.legacy ?? {})) {
+      if (target.startsWith(CORE)) add('SV002', `/legacy/${key}`, `Legacy target '${target}': this register replaces the core.`);
+    }
+  }
+  for (const entry of valid) {
+    for (const key of ['exactMatch', 'closeMatch']) {
+      for (const match of entry.concept[key] ?? []) {
+        if (match.scheme !== 'core') continue;
+        if (!core.has(match.notation)) add('SV002', `${entry.path}/${key}`, `Core match '${match.notation}' is not an active concept of the core scheme.`);
+        else if (key === 'exactMatch' && !replace) add('SV002', `${entry.path}/exactMatch`, `Exact match to '${match.notation}' while extending the core: make it the broader concept instead.`);
+      }
+    }
   }
 
   // SV001: references and chains over the resolved vocabulary.
-  const active = new Set([...core.keys(), ...valid.map((e) => e.concept.notation)]);
-  locals.forEach((entry) => {
-    if (!valid.includes(entry)) return;
+  const active = new Set([...(replace ? [] : core.keys()), ...valid.map((e) => e.concept.notation)]);
+  for (const entry of valid) {
     for (const key of ['broader', 'narrower', 'related']) {
       for (const target of entry.concept[key] ?? []) {
         if (!active.has(target)) add('SV001', `${entry.path}/${key}`, `'${target}' is not an active concept.`);
       }
     }
-  });
+  }
   for (const key of Object.keys(register.hints ?? {})) {
     if (!key.startsWith(CORE) && !active.has(key)) add('SV001', `/hints/${key}`, `Hint for '${key}', which is not an active concept.`);
   }
-  // Every local entry has a broader (the schema requires it), so a chain
-  // through locals either reaches a core concept, meets an unresolved
-  // notation (reported above), or cycles. Core chains are checked with the
-  // scheme itself.
+  // A chain through locals either reaches a top concept (core, or local with
+  // no broader), meets an unresolved notation (reported above), or cycles.
   checkChains(new Map(valid.map((e) => [e.concept.notation, e])), add, 'Local concept');
+  if (replace && !valid.some((e) => (e.concept.broader ?? []).length === 0)) {
+    add('SV001', '/concepts', 'This register replaces the core, so at least one local concept must be a top concept (no broader).');
+  }
 
   // SV003: retirement.
   checkRetired(active, register.retired ?? [], add, '/retired');
 
-  // SV005: labels, over the core scheme and the register together.
+  // SV005: labels over the resolved vocabulary.
   const owners = checkLabels([
-    ...scheme.concepts.map((c) => ({ ...c, altLabel: [], path: '(core)' })),
+    ...(replace ? [] : scheme.concepts.map((c) => ({ ...c, altLabel: [], path: '(core)' }))),
     ...valid.map((e) => ({ ...e.concept, path: e.path }))
   ], add);
   for (const [key, target] of Object.entries(register.legacy ?? {})) {

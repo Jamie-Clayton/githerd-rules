@@ -1,0 +1,41 @@
+{
+  "$schema": "https://jamie-clayton.github.io/githerd-rules/subject-vocabulary/0.9/subject-vocabulary.schema.json",
+  "title": "A repository that replaces the core abilities with its own",
+  "identifier": "ark:/99999/sv8000p0000000000",
+  "modified": "2026-10-08T21:00:00+10:00",
+  "core": "replace",
+  "prefixes": [
+    "capability",
+    "area"
+  ],
+  "conceptBase": "https://example.org/repository/subjects/",
+  "concepts": [
+    {
+      "notation": "capability:traceability",
+      "prefLabel": "Traceability",
+      "definition": "Every change can be followed back to the request that caused it.",
+      "exactMatch": [
+        {
+          "scheme": "core",
+          "notation": "ability:traceability"
+        }
+      ]
+    },
+    {
+      "notation": "capability:billing",
+      "prefLabel": "Billing",
+      "definition": "Customers are invoiced correctly and on time."
+    },
+    {
+      "notation": "area:invoices",
+      "prefLabel": "Invoices",
+      "broader": [
+        "capability:billing"
+      ]
+    }
+  ],
+  "description": "A matched top concept groups with the core ability across repositories; an unmatched one groups only within this repository.",
+  "legacy": {
+    "invoicing": "area:invoices"
+  }
+}

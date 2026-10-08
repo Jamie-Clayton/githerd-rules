@@ -3,7 +3,7 @@
   "$id": "https://jamie-clayton.github.io/githerd-rules/subject-vocabulary/0.9/scheme.schema.json",
   "$comment": "Subject Vocabulary Standard 0.9, a pre-release for testing before 1.0. SPDX-License-Identifier: Apache-2.0. Copyright 2026 Jamie Clayton. 0.x versions may still change within their folder; from 1.0, released versions are immutable and changes ship as a new major.minor folder. Rules that JSON Schema cannot express (SV001 onwards) are defined in the specification and checked by conformance tooling. The concept shape follows W3C SKOS; see context.jsonld.",
   "title": "Subject vocabulary core scheme",
-  "description": "The core scheme the standard publishes: the abilities every adopting repository shares, each a SKOS concept carried in Dublin Core subject as ability:<name>. Repositories pin it and may only add to it, in their adoption register. Its $defs also define the concept shape the adoption register and the suggestions file reuse.",
+  "description": "The core scheme the standard publishes: the abilities every adopting repository shares, each a SKOS concept carried in Dublin Core subject as ability:<name>. Repositories pin it in their adoption register and either extend it with their own concepts or replace it with a private set; ability: notations always mean this scheme. Its $defs also define the concept shape the adoption register and the suggestions file reuse.",
   "type": "object",
   "required": [
     "$schema",
@@ -55,7 +55,7 @@
       "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}(T[0-9]{2}:[0-9]{2}(:[0-9]{2}(\\.[0-9]+)?)?(Z|[+-][0-9]{2}:[0-9]{2}))?$"
     },
     "notation": {
-      "description": "The token written in front-matter subject (skos:notation): a scheme prefix, a colon, and a lowercase name. The standard uses ability: (core), theme: and component: (local); SV004 checks which prefix belongs where.",
+      "description": "The token written in front-matter subject (skos:notation): a scheme prefix, a colon, and a lowercase name. ability: is reserved for the core scheme; local concepts use a prefix their register declares (theme: and component: by default). SV004 checks which prefix belongs where.",
       "type": "string",
       "maxLength": 100,
       "pattern": "^[a-z][a-z0-9]*:[a-z][a-z0-9-]*$"
@@ -92,22 +92,29 @@
         "broader": { "description": "The more general concept (skos:broader).", "$ref": "#/$defs/notationList" },
         "narrower": { "description": "More specific concepts (skos:narrower).", "$ref": "#/$defs/notationList" },
         "related": { "description": "Concepts that often travel with this one (skos:related).", "$ref": "#/$defs/notationList" },
+        "exactMatch": {
+          "description": "Concepts in other schemes with the same meaning (skos:exactMatch). An entry with scheme core names an ability: concept of the pinned core scheme: a local concept that exact-matches a core ability groups with it across repositories.",
+          "$ref": "#/$defs/matchList"
+        },
         "closeMatch": {
-          "description": "Comparable concepts in other schemes (skos:closeMatch). Informative only; cite a characteristic's name, never another standard's text.",
-          "type": "array",
-          "maxItems": 20,
-          "items": {
-            "type": "object",
-            "required": [ "scheme", "notation" ],
-            "properties": {
-              "scheme": { "$ref": "#/$defs/text" },
-              "notation": { "$ref": "#/$defs/text" },
-              "informative": { "type": "boolean" }
-            },
-            "additionalProperties": false
-          }
+          "description": "Comparable concepts in other schemes (skos:closeMatch). Shown beside a core ability, never counted in it. Cite a characteristic's name, never another standard's text.",
+          "$ref": "#/$defs/matchList"
         },
         "extensions": { "$ref": "#/$defs/extensions" }
+      }
+    },
+    "matchList": {
+      "type": "array",
+      "maxItems": 20,
+      "items": {
+        "type": "object",
+        "required": [ "scheme", "notation" ],
+        "properties": {
+          "scheme": { "description": "The other scheme; core means this standard's pinned core scheme.", "$ref": "#/$defs/text" },
+          "notation": { "$ref": "#/$defs/text" },
+          "informative": { "type": "boolean" }
+        },
+        "additionalProperties": false
       }
     },
     "coreConcept": {
