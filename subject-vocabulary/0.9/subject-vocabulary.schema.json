@@ -1,0 +1,116 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://jamie-clayton.github.io/githerd-rules/subject-vocabulary/0.9/subject-vocabulary.schema.json",
+  "$comment": "Subject Vocabulary Standard 0.9, a pre-release for testing before 1.0. SPDX-License-Identifier: Apache-2.0. Copyright 2026 Jamie Clayton. 0.x versions may still change within their folder; from 1.0, released versions are immutable and changes ship as a new major.minor folder. Rules that JSON Schema cannot express (SV001 onwards) are defined in the specification and checked by conformance tooling.",
+  "title": "Subject vocabulary adoption register",
+  "description": "A repository's docs/registers/subject-vocabulary.json: which release of the core scheme it pins, and what it adds: local themes and components, extra suggester hints for core concepts, and a map from the tag strings it used before adopting. It may only add; it never removes or redefines a core concept. Envelope keys are Dublin Core terms and concept keys are SKOS terms; see context.jsonld.",
+  "type": "object",
+  "required": [
+    "$schema",
+    "title",
+    "identifier",
+    "modified"
+  ],
+  "properties": {
+    "$schema": {
+      "description": "The released version of this standard the register pins (dcterms:conformsTo). Must name a major.minor folder; there is no floating version.",
+      "type": "string",
+      "pattern": "^https://jamie-clayton\\.github\\.io/githerd-rules/subject-vocabulary/[0-9]+\\.[0-9]+/subject-vocabulary\\.schema\\.json$"
+    },
+    "title": { "description": "Name of the register (dcterms:title).", "$ref": "scheme.schema.json#/$defs/text" },
+    "description": { "description": "What the register adds and why (dcterms:description).", "$ref": "scheme.schema.json#/$defs/text" },
+    "identifier": { "description": "Persistent identifier of the register, as a URI such as an ARK (dcterms:identifier).", "$ref": "scheme.schema.json#/$defs/uri" },
+    "creator": { "description": "Who authored the register (dcterms:creator).", "$ref": "scheme.schema.json#/$defs/text" },
+    "contributor": { "description": "Others who contributed (dcterms:contributor).", "$ref": "scheme.schema.json#/$defs/textList" },
+    "publisher": { "description": "The repository or organisation publishing the register (dcterms:publisher).", "$ref": "scheme.schema.json#/$defs/text" },
+    "subject": { "description": "Keywords (dcterms:subject).", "$ref": "scheme.schema.json#/$defs/textList" },
+    "created": { "description": "When the register was first created (dcterms:created).", "$ref": "scheme.schema.json#/$defs/dateOrDateTime" },
+    "modified": { "description": "When the register last changed (dcterms:modified).", "$ref": "scheme.schema.json#/$defs/dateOrDateTime" },
+    "version": { "description": "The register's own semantic version (dcterms:hasVersion), independent of the standard version in $schema.", "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "source": { "description": "The vocabulary this one was derived from (dcterms:source).", "$ref": "scheme.schema.json#/$defs/text" },
+    "language": { "description": "BCP 47 language tag for labels and definitions (dcterms:language).", "type": "string", "pattern": "^[A-Za-z]{2,3}(-[A-Za-z0-9]{2,8})*$" },
+    "coverage": { "description": "Which documents the register applies to: a repository, or path globs within one (dcterms:coverage).", "$ref": "scheme.schema.json#/$defs/text" },
+    "rights": { "description": "Licence of the register, ideally an SPDX identifier (dcterms:rights).", "$ref": "scheme.schema.json#/$defs/text" },
+    "references": { "description": "Related resources (dcterms:references).", "$ref": "scheme.schema.json#/$defs/textList" },
+    "conceptBase": {
+      "description": "IRI base for this repository's theme: and component: concepts. Two repositories may use the same local notation for different things, so local concepts are only ever compared within one repository.",
+      "$ref": "scheme.schema.json#/$defs/uri"
+    },
+    "concepts": {
+      "description": "Local concepts, each narrower than a core or another local concept.",
+      "type": "array",
+      "maxItems": 500,
+      "items": { "$ref": "#/$defs/localConcept" }
+    },
+    "hints": {
+      "description": "Extra suggester hints for concepts, keyed by notation. Additive only: a hint never changes a concept's labels or definition.",
+      "type": "object",
+      "maxProperties": 500,
+      "propertyNames": { "$ref": "scheme.schema.json#/$defs/notation" },
+      "additionalProperties": {
+        "type": "object",
+        "required": [ "hiddenLabel" ],
+        "properties": {
+          "hiddenLabel": { "type": "array", "$ref": "scheme.schema.json#/$defs/labelList", "minItems": 1 }
+        },
+        "additionalProperties": false
+      }
+    },
+    "components": {
+      "description": "Code areas of this repository, matched by path globs relative to the repository root. A document that mentions a component's path counts toward the component's broader concept.",
+      "type": "array",
+      "maxItems": 200,
+      "items": {
+        "type": "object",
+        "required": [ "notation", "paths", "broader" ],
+        "properties": {
+          "notation": { "$ref": "scheme.schema.json#/$defs/notation" },
+          "prefLabel": { "$ref": "scheme.schema.json#/$defs/label" },
+          "paths": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 20,
+            "items": { "type": "string", "minLength": 1, "maxLength": 200 },
+            "uniqueItems": true
+          },
+          "broader": { "type": "array", "$ref": "scheme.schema.json#/$defs/notationList", "minItems": 1 },
+          "extensions": { "$ref": "scheme.schema.json#/$defs/extensions" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "legacy": {
+      "description": "Tag strings the repository used before adopting, each mapped to the concept that replaces it. Read by the suggester; the tag strings stay valid in documents.",
+      "type": "object",
+      "maxProperties": 1000,
+      "propertyNames": { "$ref": "scheme.schema.json#/$defs/label" },
+      "additionalProperties": { "$ref": "scheme.schema.json#/$defs/notation" }
+    },
+    "retired": {
+      "description": "Local concepts no longer offered, each naming its replacement.",
+      "type": "array",
+      "maxItems": 500,
+      "items": { "$ref": "scheme.schema.json#/$defs/retiredConcept" }
+    },
+    "extensions": { "$ref": "scheme.schema.json#/$defs/extensions" }
+  },
+  "dependentRequired": {
+    "concepts": [ "conceptBase" ],
+    "components": [ "conceptBase" ]
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "localConcept": {
+      "type": "object",
+      "$ref": "scheme.schema.json#/$defs/conceptBody",
+      "$comment": "Shapes come from conceptBody; these entries only declare which keys are required here, and that broader is not empty.",
+      "required": [ "notation", "prefLabel", "broader" ],
+      "properties": {
+        "notation": true,
+        "prefLabel": true,
+        "broader": { "type": "array", "minItems": 1 }
+      },
+      "unevaluatedProperties": false
+    }
+  }
+}

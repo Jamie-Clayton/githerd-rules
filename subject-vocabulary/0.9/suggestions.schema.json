@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://jamie-clayton.github.io/githerd-rules/subject-vocabulary/0.9/suggestions.schema.json",
+  "$comment": "Subject Vocabulary Standard 0.9, a pre-release for testing before 1.0. SPDX-License-Identifier: Apache-2.0. Copyright 2026 Jamie Clayton.",
+  "title": "Subject suggestions",
+  "description": "What a suggester proposes for each document, with the reasons for every suggestion, and, once a person has reviewed it, which suggestions they accepted. A suggester only writes this file; it never edits a document. A tool that applies accepted subjects reads only items with accepted, acceptedBy and acceptedAt.",
+  "type": "object",
+  "required": [ "$schema", "scheme", "documents" ],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "pattern": "^https://jamie-clayton\\.github\\.io/githerd-rules/subject-vocabulary/[0-9]+\\.[0-9]+/suggestions\\.schema\\.json$"
+    },
+    "scheme": {
+      "description": "The major.minor of the core scheme the suggestions were made against.",
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+$"
+    },
+    "generator": { "description": "The suggester and its version.", "$ref": "scheme.schema.json#/$defs/text" },
+    "generatedAt": {
+      "description": "When the file was produced. Optional, and ignored when comparing outputs, so the same inputs give the same file.",
+      "$ref": "scheme.schema.json#/$defs/dateOrDateTime"
+    },
+    "documents": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/document" }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "document": {
+      "type": "object",
+      "required": [ "path", "existing", "suggestions" ],
+      "properties": {
+        "path": { "description": "Repository-relative path of the document.", "$ref": "scheme.schema.json#/$defs/text" },
+        "existing": { "description": "The document's subject entries as they were read.", "type": "array", "items": { "type": "string" } },
+        "suggestions": { "type": "array", "items": { "$ref": "#/$defs/suggestion" } }
+      },
+      "additionalProperties": false
+    },
+    "suggestion": {
+      "type": "object",
+      "required": [ "notation", "score", "reasons" ],
+      "properties": {
+        "notation": { "$ref": "scheme.schema.json#/$defs/notation" },
+        "score": { "type": "number", "minimum": 0, "maximum": 1 },
+        "reasons": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/reason" }
+        },
+        "accepted": { "description": "Set by a person reviewing the file, never by a suggester.", "type": "boolean" },
+        "acceptedBy": { "$ref": "scheme.schema.json#/$defs/text" },
+        "acceptedAt": { "$ref": "scheme.schema.json#/$defs/dateOrDateTime" }
+      },
+      "if": {
+        "type": "object",
+        "properties": { "accepted": { "const": true } },
+        "required": [ "accepted" ]
+      },
+      "then": { "properties": { "acceptedBy": true, "acceptedAt": true }, "required": [ "acceptedBy", "acceptedAt" ] },
+      "additionalProperties": false
+    },
+    "reason": {
+      "type": "object",
+      "required": [ "signal", "field", "match", "weight" ],
+      "properties": {
+        "signal": {
+          "description": "Which signal of the suggestion process matched; see suggest.md.",
+          "enum": [ "existing-subject", "title", "description", "heading", "body", "link-neighbour", "component-path" ]
+        },
+        "field": { "description": "Where the match was found, such as title, h1, description or a heading.", "$ref": "scheme.schema.json#/$defs/text" },
+        "match": { "description": "The label or path that matched.", "$ref": "scheme.schema.json#/$defs/text" },
+        "weight": { "type": "number", "minimum": 0 }
+      },
+      "additionalProperties": false
+    }
+  }
+}
