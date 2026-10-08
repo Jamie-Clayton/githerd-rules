@@ -1,5 +1,5 @@
-// Safety and accessibility check for every SVG published under
-// lifecycle-policies/. A public SVG can execute script or pull in remote
+// Safety and accessibility check for every SVG published under any standard
+// (standards.mjs). A public SVG can execute script or pull in remote
 // content, so each one must:
 //
 //   title              have a non-empty <title>
@@ -15,6 +15,7 @@
 import { readFileSync, readdirSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { discoverStandards } from './standards.mjs';
 
 export function checkSvg(text) {
   const findings = [];
@@ -56,7 +57,7 @@ function svgFiles(dir) {
 if (import.meta.url === pathToFileURL(process.argv[1]).href) {
   const rootIndex = process.argv.indexOf('--root');
   const root = rootIndex >= 0 ? process.argv[rootIndex + 1] : process.cwd();
-  const files = svgFiles(join(root, 'lifecycle-policies'));
+  const files = discoverStandards(root).flatMap(({ folder }) => svgFiles(join(root, folder)));
   let failures = 0;
   for (const file of files) {
     const findings = checkSvg(readFileSync(file, 'utf8'));

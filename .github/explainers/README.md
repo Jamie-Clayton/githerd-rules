@@ -1,12 +1,15 @@
 # Explainer generator
 
-Generates the five explainer SVGs in `lifecycle-policies/assets/`. The SVGs are
-build output: edit `explainers.mjs` or `sketch.mjs`, then regenerate. CI fails
-if a committed SVG differs from what the generator produces.
+Generates the explainer SVGs in each standard's `assets/` folder, for example
+the five in `lifecycle-policies/assets/`. Each standard has its own drawings,
+`<standard>.mjs`, sharing the shapes in `sketch.mjs`. The SVGs are build
+output: edit the drawings or `sketch.mjs`, then regenerate. CI fails if a
+committed SVG differs from what the generator produces, or if a standard has
+an `assets/` folder and no generator.
 
 ```bash
 npm ci
-node explainers.mjs                                   # writes lifecycle-policies/assets/*.svg
+node explainers.mjs --standard lifecycle-policies    # writes lifecycle-policies/assets/*.svg
 node render.mjs ../../lifecycle-policies/assets /tmp/previews   # PNG and 320px previews for review
 ```
 

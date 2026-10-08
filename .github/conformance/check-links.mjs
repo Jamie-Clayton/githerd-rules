@@ -1,9 +1,9 @@
-// Internal link check for the Lifecycle Policy Standard's pages. Every
-// Markdown link, image and HTML href/src in lifecycle-policies/**/*.md must
-// resolve to a file in this repository when it is:
+// Internal link check for the pages of every standard (standards.mjs). Every
+// Markdown link, image and HTML href/src in <standard>/**/*.md must resolve to
+// a file in this repository when it is:
 //
 //   - relative (resolved against the page's folder), or
-//   - absolute into https://jamie-clayton.github.io/githerd-rules/lifecycle-policies/
+//   - absolute into https://jamie-clayton.github.io/githerd-rules/
 //
 // A page link may name the .md source, the rendered .html, or be extensionless;
 // a folder link needs an index.md. Anchors, other sites and mailto are not
@@ -14,6 +14,7 @@
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { dirname, join, relative, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { discoverStandards } from './standards.mjs';
 
 const SITE = 'https://jamie-clayton.github.io/githerd-rules/';
 
@@ -40,7 +41,8 @@ function resolves(path) {
 
 export function checkLinks(root) {
   const findings = [];
-  for (const page of markdownFiles(join(root, 'lifecycle-policies'))) {
+  const pages = discoverStandards(root).flatMap(({ folder }) => markdownFiles(join(root, folder)));
+  for (const page of pages) {
     for (const target of targetsIn(readFileSync(page, 'utf8'))) {
       if (target.startsWith('#') || target.startsWith('mailto:')) continue;
       let local;
