@@ -23,6 +23,8 @@
     "rights": "dcterms:rights",
     "references": { "@id": "dcterms:references", "@container": "@set" },
 
+    "core": "sv:coreMode",
+    "prefixes": { "@id": "sv:prefix", "@container": "@set" },
     "conceptBase": { "@id": "sv:conceptBase", "@type": "@id" },
     "concepts": { "@id": "skos:hasTopConcept", "@container": "@set" },
     "notation": "skos:notation",
@@ -35,6 +37,7 @@
     "broader": { "@id": "skos:broader", "@type": "@id", "@container": "@set" },
     "narrower": { "@id": "skos:narrower", "@type": "@id", "@container": "@set" },
     "related": { "@id": "skos:related", "@type": "@id", "@container": "@set" },
+    "exactMatch": { "@id": "skos:exactMatch", "@container": "@set" },
     "closeMatch": { "@id": "skos:closeMatch", "@container": "@set" },
     "scheme": "skos:inScheme",
     "informative": "sv:informative",

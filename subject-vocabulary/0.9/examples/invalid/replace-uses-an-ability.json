@@ -1,0 +1,22 @@
+{
+  "$schema": "https://jamie-clayton.github.io/githerd-rules/subject-vocabulary/0.9/subject-vocabulary.schema.json",
+  "title": "A repository that replaces the core abilities with its own",
+  "identifier": "ark:/99999/sv8000p0000000000",
+  "modified": "2026-10-08T21:00:00+10:00",
+  "core": "replace",
+  "prefixes": [
+    "capability",
+    "area"
+  ],
+  "conceptBase": "https://example.org/repository/subjects/",
+  "concepts": [
+    {
+      "notation": "capability:billing",
+      "prefLabel": "Billing"
+    },
+    {
+      "notation": "ability:billing",
+      "prefLabel": "Billing ability"
+    }
+  ]
+}

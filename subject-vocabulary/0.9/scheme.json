@@ -1,7 +1,7 @@
 {
   "$schema": "https://jamie-clayton.github.io/githerd-rules/subject-vocabulary/0.9/scheme.schema.json",
   "title": "Subject Vocabulary core scheme",
-  "description": "Seven abilities a person using the product can rely on, and one internal concept for how the product itself is built. Every adopting repository shares them; each adds its own themes and components underneath. ISO/IEC 25010:2023 matches are informative and cite the characteristic name only.",
+  "description": "Seven abilities a person using the product can rely on, and one internal concept for how the product itself is built. An adopting repository extends them with its own concepts, or replaces them with a private set whose concepts can match these. ISO/IEC 25010:2023 matches are informative and cite the characteristic name only.",
   "identifier": "https://jamie-clayton.github.io/githerd-rules/subject-vocabulary/0.9/scheme.json",
   "publisher": "githerd-rules",
   "created": "2026-10-08",

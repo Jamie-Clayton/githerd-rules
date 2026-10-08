@@ -26,6 +26,24 @@
       "path": "docs/plans/2026-10-02-cleanup.md",
       "existing": [],
       "suggestions": []
+    },
+    {
+      "path": "docs/specs/2026-10-03-audit-trail.md",
+      "existing": [],
+      "suggestions": [
+        {
+          "notation": "ability:traceability",
+          "score": 0.41,
+          "reasons": [
+            {
+              "signal": "definition",
+              "field": "definition",
+              "match": "request, change",
+              "weight": 0.5
+            }
+          ]
+        }
+      ]
     }
   ]
 }

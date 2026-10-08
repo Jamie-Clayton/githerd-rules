@@ -3,7 +3,7 @@
   "$id": "https://jamie-clayton.github.io/githerd-rules/subject-vocabulary/0.9/subject-vocabulary.schema.json",
   "$comment": "Subject Vocabulary Standard 0.9, a pre-release for testing before 1.0. SPDX-License-Identifier: Apache-2.0. Copyright 2026 Jamie Clayton. 0.x versions may still change within their folder; from 1.0, released versions are immutable and changes ship as a new major.minor folder. Rules that JSON Schema cannot express (SV001 onwards) are defined in the specification and checked by conformance tooling.",
   "title": "Subject vocabulary adoption register",
-  "description": "A repository's docs/registers/subject-vocabulary.json: which release of the core scheme it pins, and what it adds: local themes and components, extra suggester hints for core concepts, and a map from the tag strings it used before adopting. It may only add; it never removes or redefines a core concept. Envelope keys are Dublin Core terms and concept keys are SKOS terms; see context.jsonld.",
+  "description": "A repository's docs/registers/subject-vocabulary.json: which release of the core scheme it pins, and whether it extends that scheme or replaces it with a private set (core), the local prefixes it uses, its own concepts and components, extra suggester hints, and a map from the tag strings it used before adopting. A register never redefines a core concept: ability: always means the core scheme. Envelope keys are Dublin Core terms and concept keys are SKOS terms; see context.jsonld.",
   "type": "object",
   "required": [
     "$schema",
@@ -32,12 +32,24 @@
     "coverage": { "description": "Which documents the register applies to: a repository, or path globs within one (dcterms:coverage).", "$ref": "scheme.schema.json#/$defs/text" },
     "rights": { "description": "Licence of the register, ideally an SPDX identifier (dcterms:rights).", "$ref": "scheme.schema.json#/$defs/text" },
     "references": { "description": "Related resources (dcterms:references).", "$ref": "scheme.schema.json#/$defs/textList" },
+    "core": {
+      "description": "extend (the default when absent): the core scheme's concepts plus this register's. replace: this register's concepts only; ability: notations then do not resolve here. Changing it is a major change of the register's version.",
+      "enum": [ "extend", "replace" ]
+    },
+    "prefixes": {
+      "description": "The local scheme prefixes this register opts into resolution. Absent means theme and component. ability is reserved for the core scheme and can never be declared.",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 20,
+      "uniqueItems": true,
+      "items": { "type": "string", "pattern": "^[a-z][a-z0-9]*$", "not": { "const": "ability" } }
+    },
     "conceptBase": {
-      "description": "IRI base for this repository's theme: and component: concepts. Two repositories may use the same local notation for different things, so local concepts are only ever compared within one repository.",
+      "description": "IRI base for this repository's local concepts; a concept's IRI is conceptBase + prefix + / + name. Two repositories may use the same local notation for different things, so local concepts are only ever compared within one repository.",
       "$ref": "scheme.schema.json#/$defs/uri"
     },
     "concepts": {
-      "description": "Local concepts, each narrower than a core or another local concept.",
+      "description": "Local concepts. One with no broader is a top concept; any declared prefix may hold top concepts.",
       "type": "array",
       "maxItems": 500,
       "items": { "$ref": "#/$defs/localConcept" }
@@ -62,7 +74,7 @@
       "maxItems": 200,
       "items": {
         "type": "object",
-        "required": [ "notation", "paths", "broader" ],
+        "required": [ "notation", "paths" ],
         "properties": {
           "notation": { "$ref": "scheme.schema.json#/$defs/notation" },
           "prefLabel": { "$ref": "scheme.schema.json#/$defs/label" },
@@ -94,6 +106,15 @@
     },
     "extensions": { "$ref": "scheme.schema.json#/$defs/extensions" }
   },
+  "if": {
+    "type": "object",
+    "properties": { "core": { "const": "replace" } },
+    "required": [ "core" ]
+  },
+  "then": {
+    "properties": { "concepts": { "type": "array", "minItems": 1 } },
+    "required": [ "concepts" ]
+  },
   "dependentRequired": {
     "concepts": [ "conceptBase" ],
     "components": [ "conceptBase" ]
@@ -103,12 +124,11 @@
     "localConcept": {
       "type": "object",
       "$ref": "scheme.schema.json#/$defs/conceptBody",
-      "$comment": "Shapes come from conceptBody; these entries only declare which keys are required here, and that broader is not empty.",
-      "required": [ "notation", "prefLabel", "broader" ],
+      "$comment": "Shapes come from conceptBody; the true entries only declare which keys are required here. definition is recommended, not required, for a local concept.",
+      "required": [ "notation", "prefLabel" ],
       "properties": {
         "notation": true,
-        "prefLabel": true,
-        "broader": { "type": "array", "minItems": 1 }
+        "prefLabel": true
       },
       "unevaluatedProperties": false
     }

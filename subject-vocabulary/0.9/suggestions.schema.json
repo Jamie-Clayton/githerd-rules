@@ -67,7 +67,7 @@
       "properties": {
         "signal": {
           "description": "Which signal of the suggestion process matched; see suggest.md.",
-          "enum": [ "existing-subject", "title", "description", "heading", "body", "link-neighbour", "component-path" ]
+          "enum": [ "existing-subject", "title", "description", "heading", "body", "definition", "link-neighbour", "component-path" ]
         },
         "field": { "description": "Where the match was found, such as title, h1, description or a heading.", "$ref": "scheme.schema.json#/$defs/text" },
         "match": { "description": "The label or path that matched.", "$ref": "scheme.schema.json#/$defs/text" },
