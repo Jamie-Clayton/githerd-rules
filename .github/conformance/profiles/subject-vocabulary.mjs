@@ -9,7 +9,7 @@
 //      and that ability: notations expand to version-independent concept IRIs;
 //   3. supplies the semantic rules for schema-valid examples: register
 //      examples are checked against this version's scheme.json (SV001 to
-//      SV006), scheme examples on their own.
+//      SV006) in extend or replace mode, scheme examples on their own.
 
 import { readFileSync, readdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
@@ -22,7 +22,7 @@ const DC = [
 ].map((term) => `http://purl.org/dc/terms/${term}`);
 const SKOS = [
   'hasTopConcept', 'notation', 'prefLabel', 'altLabel', 'hiddenLabel', 'definition', 'scopeNote',
-  'broader', 'narrower', 'related', 'closeMatch', 'inScheme'
+  'broader', 'narrower', 'related', 'exactMatch', 'closeMatch', 'inScheme'
 ].map((term) => `http://www.w3.org/2004/02/skos/core#${term}`);
 const CONCEPT_IRI = 'https://jamie-clayton.github.io/githerd-rules/subject-vocabulary/concepts/ability/';
 

@@ -58,6 +58,36 @@ test('altLabel comparison folds case and surrounding space', () => {
   }), scheme, ['0.9'])), ['SV005']);
 });
 
+test('under replace, core labels are not part of the resolved vocabulary', () => {
+  assert.deepEqual(checkRegister(register({
+    core: 'replace', prefixes: ['capability'],
+    concepts: [{ notation: 'capability:visibility', prefLabel: 'Visibility', altLabel: ['observability'] }]
+  }), scheme, ['0.9']), []);
+});
+
+test('under replace, a broader pointing at a core ability does not resolve', () => {
+  assert.deepEqual(rules(checkRegister(register({
+    core: 'replace', prefixes: ['capability'],
+    concepts: [
+      { notation: 'capability:billing', prefLabel: 'Billing' },
+      { notation: 'capability:invoices', prefLabel: 'Invoices', broader: ['ability:observability'] }
+    ]
+  }), scheme, ['0.9'])), ['SV001']);
+});
+
+test('under extend, a close match to a core ability is allowed', () => {
+  assert.deepEqual(checkRegister(register({
+    concepts: [{ notation: 'theme:audit', prefLabel: 'Audit', closeMatch: [{ scheme: 'core', notation: 'ability:governability' }] }]
+  }), scheme, ['0.9']), []);
+});
+
+test('declared prefixes replace the default, so theme: is undeclared when not listed', () => {
+  assert.deepEqual(rules(checkRegister(register({
+    prefixes: ['area'],
+    concepts: [{ notation: 'theme:ux', prefLabel: 'UX', broader: ['ability:discoverability'] }]
+  }), scheme, ['0.9'])), ['SV004']);
+});
+
 test('a broader cycle in the core scheme is SV001', () => {
   const concept = (name, broader) => ({ notation: `ability:${name}`, prefLabel: name, definition: 'd', scopeNote: 's', audience: 'customer', broader: [broader] });
   const findings = checkScheme({ concepts: [concept('a', 'ability:b'), concept('b', 'ability:a')] });
