@@ -1,0 +1,104 @@
+{
+  "description": "Steps 2 and 6: declared prefixes replace the default (theme: becomes a keyword), local top concepts under extend, and a label two concepts share is ambiguous.",
+  "scheme": {
+    "title": "Fixture scheme",
+    "identifier": "https://example.org/scheme.json",
+    "modified": "2026-10-09",
+    "concepts": [
+      {
+        "notation": "ability:alpha",
+        "prefLabel": "Alpha",
+        "definition": "d",
+        "scopeNote": "s",
+        "audience": "customer",
+        "altLabel": [
+          "first"
+        ],
+        "hiddenLabel": [
+          "one"
+        ]
+      },
+      {
+        "notation": "ability:beta",
+        "prefLabel": "Beta",
+        "definition": "d",
+        "scopeNote": "s",
+        "audience": "internal",
+        "hiddenLabel": [
+          "two"
+        ]
+      }
+    ],
+    "retired": [
+      {
+        "notation": "ability:old-alpha",
+        "isReplacedBy": "ability:alpha",
+        "deprecatedAt": "2026-10-01"
+      }
+    ]
+  },
+  "register": {
+    "$schema": "https://jamie-clayton.github.io/githerd-rules/subject-vocabulary/0.9/subject-vocabulary.schema.json",
+    "title": "Fixture register",
+    "identifier": "https://example.org/register",
+    "modified": "2026-10-09",
+    "conceptBase": "https://example.org/subjects/",
+    "prefixes": [
+      "area"
+    ],
+    "concepts": [
+      {
+        "notation": "area:south",
+        "prefLabel": "Region"
+      },
+      {
+        "notation": "area:north",
+        "prefLabel": "Region"
+      }
+    ]
+  },
+  "tokens": [
+    "region",
+    "theme:anything",
+    "area:north",
+    "ability:alpha"
+  ],
+  "expected": {
+    "resolutions": [
+      {
+        "token": "region",
+        "normalised": "region",
+        "kind": "keyword",
+        "status": "ambiguous",
+        "candidates": [
+          "area:north",
+          "area:south"
+        ]
+      },
+      {
+        "token": "theme:anything",
+        "normalised": "theme:anything",
+        "kind": "keyword",
+        "status": "unknown"
+      },
+      {
+        "token": "area:north",
+        "normalised": "area:north",
+        "kind": "prefixed",
+        "status": "active",
+        "notation": "area:north",
+        "origin": "local",
+        "top": "area:north"
+      },
+      {
+        "token": "ability:alpha",
+        "normalised": "ability:alpha",
+        "kind": "prefixed",
+        "status": "active",
+        "notation": "ability:alpha",
+        "origin": "core",
+        "top": "ability:alpha"
+      }
+    ]
+  }
+}

@@ -28,6 +28,19 @@
 //          prefLabel in the resolved vocabulary, compared case-insensitively,
 //          so a legacy string or absorbed name leads to exactly one concept.
 //   SV006  A register's $schema names a version the standard has published.
+//   SV007  Every local concept and component has at most one broader, so the
+//          rollup is a forest rooted at the resolved vocabulary's top concepts.
+//   SV008  Under extend, no local concept's label (prefLabel, altLabel or
+//          hiddenLabel) equals a core concept's label: a local synonym never
+//          competes with the core. Under replace, a local concept whose label
+//          equals a core concept's declares a core exactMatch or closeMatch to
+//          it. (A local altLabel equal to a core prefLabel is SV005's.)
+//   SV009  Every legacy target resolves to an active concept (a retired target
+//          names its isReplacedBy), and no altLabel or hiddenLabel, hints
+//          included, belongs to two concepts of the resolved vocabulary.
+//
+//   Labels are compared after normalisation (resolve.md step 3): Unicode NFC,
+//   lowercase, trimmed, internal whitespace collapsed to one space.
 //
 // Each concept or entry raises at most one finding per rule, in that order,
 // so a single mistake is reported once.
@@ -35,7 +48,7 @@
 const CORE = 'ability:';
 const DEFAULT_PREFIXES = ['theme', 'component'];
 const prefixOf = (notation) => notation.slice(0, notation.indexOf(':'));
-const fold = (text) => text.normalize('NFC').toLowerCase().trim();
+const fold = (text) => text.normalize('NFC').toLowerCase().trim().replace(/\s+/gu, ' ');
 
 function makeFindings() {
   const findings = [];
@@ -95,6 +108,24 @@ function checkLabels(entries, add) {
   return owners;
 }
 
+// SV009's label half: no altLabel or hiddenLabel belongs to two concepts.
+// entries: { notation, prefLabel, altLabel?, hiddenLabel?, path }[]
+// ignore(a, b): a pair of owners another rule reports instead.
+function checkSharedLabels(entries, add, ignore = () => false) {
+  const owners = new Map();
+  for (const entry of entries) {
+    const labels = [entry.prefLabel, ...(entry.altLabel ?? []), ...(entry.hiddenLabel ?? [])].filter(Boolean);
+    for (const key of new Set(labels.map(fold))) {
+      const owner = owners.get(key);
+      if (!owner) owners.set(key, entry.notation);
+      else if (owner !== entry.notation && !ignore(owner, entry.notation) && labels.some((l) => fold(l) === key && l !== entry.prefLabel)) {
+        add('SV009', entry.path, `Label '${key}' belongs to both '${owner}' and '${entry.notation}'.`);
+        break;
+      }
+    }
+  }
+}
+
 /** Checks a core scheme on its own. */
 export function checkScheme(scheme) {
   const { findings, add } = makeFindings();
@@ -107,7 +138,9 @@ export function checkScheme(scheme) {
   checkReferences(concepts, active, add, '/concepts');
   checkChains(new Map(concepts.map((c, i) => [c.notation, { concept: c, path: `/concepts/${i}` }])), add, 'Concept');
   checkRetired(active, scheme.retired ?? [], add, '/retired');
-  checkLabels(concepts.map((c, i) => ({ ...c, path: `/concepts/${i}` })), add);
+  const entries = concepts.map((c, i) => ({ ...c, path: `/concepts/${i}` }));
+  checkLabels(entries, add);
+  checkSharedLabels(entries, add);
   return findings;
 }
 
@@ -190,6 +223,48 @@ export function checkRegister(register, scheme, publishedVersions) {
     const owner = owners.get(fold(key));
     if (owner && owner !== target) add('SV005', `/legacy/${key}`, `Legacy key '${key}' is the notation or prefLabel of '${owner}'.`);
   }
+
+  // SV007: one broader at most.
+  for (const entry of valid) {
+    if ((entry.concept.broader ?? []).length > 1) add('SV007', `${entry.path}/broader`, `'${entry.concept.notation}' has ${entry.concept.broader.length} broader concepts; at most one is allowed.`);
+  }
+
+  // SV008: local labels against core labels.
+  const hinted = (notation) => register.hints?.[notation]?.hiddenLabel ?? [];
+  const coreLabels = new Map();
+  for (const concept of scheme.concepts) {
+    for (const [kind, labels] of [['pref', [concept.prefLabel]], ['alt', concept.altLabel ?? []], ['hidden', [...(concept.hiddenLabel ?? []), ...(replace ? [] : hinted(concept.notation))]]]) {
+      for (const label of labels) coreLabels.set(fold(label), { notation: concept.notation, kind });
+    }
+  }
+  for (const entry of valid) {
+    const c = entry.concept;
+    const matched = new Set([...(c.exactMatch ?? []), ...(c.closeMatch ?? [])].filter((m) => m.scheme === 'core').map((m) => m.notation));
+    const clash = [['pref', [c.prefLabel]], ['alt', c.altLabel ?? []], ['hidden', c.hiddenLabel ?? []]]
+      .flatMap(([kind, labels]) => labels.filter(Boolean).map((label) => ({ kind, label, core: coreLabels.get(fold(label)) })))
+      .find(({ kind, core }) => core && !(kind === 'alt' && core.kind === 'pref') && !(replace && matched.has(core.notation)));
+    if (clash) {
+      add('SV008', entry.path, replace
+        ? `'${c.notation}' uses the core label '${clash.label}' of '${clash.core.notation}' without a core exactMatch or closeMatch to it.`
+        : `'${c.notation}' uses the label '${clash.label}', which belongs to the core concept '${clash.core.notation}'.`);
+    }
+  }
+
+  // SV009: legacy targets, and labels owned twice (hints merged in).
+  const retiredLocal = new Map((register.retired ?? []).map((r) => [r.notation, r.isReplacedBy]));
+  for (const [key, target] of Object.entries(register.legacy ?? {})) {
+    if (replace && target.startsWith(CORE)) continue; // SV002's
+    if (active.has(target)) continue;
+    add('SV009', `/legacy/${key}`, retiredLocal.has(target)
+      ? `Legacy target '${target}' is retired; use '${retiredLocal.get(target)}'.`
+      : `Legacy target '${target}' is not an active concept.`);
+  }
+  // Under extend a local label equal to a core label is SV008's, not SV009's.
+  const isCore = (notation) => core.has(notation);
+  checkSharedLabels([
+    ...(replace ? [] : scheme.concepts.map((c) => ({ ...c, hiddenLabel: [...(c.hiddenLabel ?? []), ...hinted(c.notation)], path: core.has(c.notation) && hinted(c.notation).length ? `/hints/${c.notation}` : '(core)' }))),
+    ...valid.map((e) => ({ ...e.concept, hiddenLabel: [...(e.concept.hiddenLabel ?? []), ...hinted(e.concept.notation)], path: e.path }))
+  ], add, (a, b) => !replace && isCore(a) !== isCore(b));
 
   // SV006: the pin names a published version.
   const pinned = /\/subject-vocabulary\/([0-9]+\.[0-9]+)\//.exec(register.$schema)?.[1];

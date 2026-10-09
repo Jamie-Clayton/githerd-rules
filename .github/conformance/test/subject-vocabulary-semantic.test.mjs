@@ -58,11 +58,19 @@ test('altLabel comparison folds case and surrounding space', () => {
   }), scheme, ['0.9'])), ['SV005']);
 });
 
-test('under replace, core labels are not part of the resolved vocabulary', () => {
-  assert.deepEqual(checkRegister(register({
+test('under replace, a core label needs a core match (SV008), and core labels are not otherwise compared', () => {
+  const visibility = (extra) => register({
     core: 'replace', prefixes: ['capability'],
-    concepts: [{ notation: 'capability:visibility', prefLabel: 'Visibility', altLabel: ['observability'] }]
-  }), scheme, ['0.9']), []);
+    concepts: [{ notation: 'capability:visibility', prefLabel: 'Visibility', altLabel: ['observability'], ...extra }]
+  });
+  assert.deepEqual(rules(checkRegister(visibility({}), scheme, ['0.9'])), ['SV008']);
+  assert.deepEqual(checkRegister(visibility({ closeMatch: [{ scheme: 'core', notation: 'ability:observability' }] }), scheme, ['0.9']), []);
+});
+
+test('label comparison collapses internal whitespace', () => {
+  assert.deepEqual(rules(checkRegister(register({
+    concepts: [{ notation: 'theme:a', prefLabel: 'A', broader: ['ability:observability'], hiddenLabel: ['Threat  Model'] }]
+  }), scheme, ['0.9'])), ['SV008']);
 });
 
 test('under replace, a broader pointing at a core ability does not resolve', () => {

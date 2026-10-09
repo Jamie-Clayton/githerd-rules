@@ -9,18 +9,9 @@
       "notation": "theme:dashboard-ux",
       "prefLabel": "Dashboard UX",
       "broader": [
-        "ability:discoverability"
-      ],
-      "hiddenLabel": [
-        "dashboard tile"
+        "ability:discoverability",
+        "ability:observability"
       ]
-    }
-  ],
-  "retired": [
-    {
-      "notation": "theme:dashboard-ux",
-      "isReplacedBy": "ability:discoverability",
-      "deprecatedAt": "2026-10-01"
     }
   ]
 }
