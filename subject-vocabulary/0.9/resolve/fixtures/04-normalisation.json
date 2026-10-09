@@ -1,0 +1,91 @@
+{
+  "description": "Step 3 edge cases: NFC composition, lowercase, trim, internal white space collapsed (tab included), hyphen and underscore kept, an empty token.",
+  "scheme": {
+    "title": "Fixture scheme",
+    "identifier": "https://example.org/scheme.json",
+    "modified": "2026-10-09",
+    "concepts": [
+      {
+        "notation": "ability:alpha",
+        "prefLabel": "Café",
+        "definition": "d",
+        "scopeNote": "s",
+        "audience": "customer"
+      }
+    ],
+    "retired": []
+  },
+  "register": {
+    "$schema": "https://jamie-clayton.github.io/githerd-rules/subject-vocabulary/0.9/subject-vocabulary.schema.json",
+    "title": "Fixture register",
+    "identifier": "https://example.org/register",
+    "modified": "2026-10-09",
+    "conceptBase": "https://example.org/subjects/",
+    "concepts": [
+      {
+        "notation": "theme:dashboard-ux",
+        "prefLabel": "Dashboard UX",
+        "broader": [
+          "ability:alpha"
+        ]
+      }
+    ]
+  },
+  "tokens": [
+    "Café",
+    "  Dashboard \t  UX ",
+    "THEME:Dashboard-UX",
+    "theme:dashboard_ux",
+    "dashboard-ux",
+    ""
+  ],
+  "expected": {
+    "resolutions": [
+      {
+        "token": "Café",
+        "normalised": "café",
+        "kind": "keyword",
+        "status": "label",
+        "notation": "ability:alpha",
+        "origin": "core",
+        "top": "ability:alpha"
+      },
+      {
+        "token": "  Dashboard \t  UX ",
+        "normalised": "dashboard ux",
+        "kind": "keyword",
+        "status": "label",
+        "notation": "theme:dashboard-ux",
+        "origin": "local",
+        "top": "ability:alpha"
+      },
+      {
+        "token": "THEME:Dashboard-UX",
+        "normalised": "theme:dashboard-ux",
+        "kind": "prefixed",
+        "status": "active",
+        "notation": "theme:dashboard-ux",
+        "origin": "local",
+        "top": "ability:alpha"
+      },
+      {
+        "token": "theme:dashboard_ux",
+        "normalised": "theme:dashboard_ux",
+        "kind": "keyword",
+        "status": "unknown"
+      },
+      {
+        "token": "dashboard-ux",
+        "normalised": "dashboard-ux",
+        "kind": "keyword",
+        "status": "unknown"
+      },
+      {
+        "token": "",
+        "normalised": "",
+        "kind": "keyword",
+        "status": "unknown"
+      }
+    ]
+  }
+}

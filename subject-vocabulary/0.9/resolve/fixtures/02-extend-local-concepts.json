@@ -1,0 +1,240 @@
+{
+  "description": "Steps 1, 5, 6 and 7 under extend: local theme and component, hints merged without duplicates, retired core and local concepts, legacy and label lookups, hidden labels never resolve.",
+  "scheme": {
+    "title": "Fixture scheme",
+    "identifier": "https://example.org/scheme.json",
+    "modified": "2026-10-09",
+    "concepts": [
+      {
+        "notation": "ability:alpha",
+        "prefLabel": "Alpha",
+        "definition": "d",
+        "scopeNote": "s",
+        "audience": "customer",
+        "altLabel": [
+          "first"
+        ],
+        "hiddenLabel": [
+          "one"
+        ]
+      },
+      {
+        "notation": "ability:beta",
+        "prefLabel": "Beta",
+        "definition": "d",
+        "scopeNote": "s",
+        "audience": "internal",
+        "hiddenLabel": [
+          "two"
+        ]
+      }
+    ],
+    "retired": [
+      {
+        "notation": "ability:old-alpha",
+        "isReplacedBy": "ability:alpha",
+        "deprecatedAt": "2026-10-01"
+      }
+    ]
+  },
+  "register": {
+    "$schema": "https://jamie-clayton.github.io/githerd-rules/subject-vocabulary/0.9/subject-vocabulary.schema.json",
+    "title": "Fixture register",
+    "identifier": "https://example.org/register",
+    "modified": "2026-10-09",
+    "conceptBase": "https://example.org/subjects/",
+    "concepts": [
+      {
+        "notation": "theme:ui",
+        "prefLabel": "User interface",
+        "broader": [
+          "ability:alpha"
+        ],
+        "altLabel": [
+          "UI"
+        ],
+        "hiddenLabel": [
+          "screen"
+        ]
+      }
+    ],
+    "components": [
+      {
+        "notation": "component:web",
+        "paths": [
+          "web/**"
+        ],
+        "broader": [
+          "theme:ui"
+        ]
+      }
+    ],
+    "hints": {
+      "ability:beta": {
+        "hiddenLabel": [
+          "Two",
+          "deploy"
+        ]
+      },
+      "theme:ui": {
+        "hiddenLabel": [
+          "panel"
+        ]
+      }
+    },
+    "legacy": {
+      "UI-Old": "theme:ui",
+      "first-thing": "ability:alpha"
+    },
+    "retired": [
+      {
+        "notation": "theme:legacy-ui",
+        "isReplacedBy": "theme:ui",
+        "deprecatedAt": "2026-10-01"
+      }
+    ]
+  },
+  "tokens": [
+    "ability:alpha",
+    "ability:old-alpha",
+    "theme:ui",
+    "component:web",
+    "theme:legacy-ui",
+    "UI-Old",
+    "ui",
+    "First",
+    "screen",
+    "theme:missing",
+    "ability:gamma"
+  ],
+  "expected": {
+    "vocabulary": [
+      {
+        "notation": "ability:alpha",
+        "origin": "core",
+        "top": "ability:alpha",
+        "hiddenLabel": [
+          "one"
+        ]
+      },
+      {
+        "notation": "ability:beta",
+        "origin": "core",
+        "top": "ability:beta",
+        "hiddenLabel": [
+          "two",
+          "deploy"
+        ]
+      },
+      {
+        "notation": "component:web",
+        "origin": "local",
+        "top": "ability:alpha",
+        "hiddenLabel": []
+      },
+      {
+        "notation": "theme:ui",
+        "origin": "local",
+        "top": "ability:alpha",
+        "hiddenLabel": [
+          "screen",
+          "panel"
+        ]
+      }
+    ],
+    "resolutions": [
+      {
+        "token": "ability:alpha",
+        "normalised": "ability:alpha",
+        "kind": "prefixed",
+        "status": "active",
+        "notation": "ability:alpha",
+        "origin": "core",
+        "top": "ability:alpha"
+      },
+      {
+        "token": "ability:old-alpha",
+        "normalised": "ability:old-alpha",
+        "kind": "prefixed",
+        "status": "retired",
+        "retired": "ability:old-alpha",
+        "notation": "ability:alpha",
+        "origin": "core",
+        "top": "ability:alpha"
+      },
+      {
+        "token": "theme:ui",
+        "normalised": "theme:ui",
+        "kind": "prefixed",
+        "status": "active",
+        "notation": "theme:ui",
+        "origin": "local",
+        "top": "ability:alpha"
+      },
+      {
+        "token": "component:web",
+        "normalised": "component:web",
+        "kind": "prefixed",
+        "status": "active",
+        "notation": "component:web",
+        "origin": "local",
+        "top": "ability:alpha"
+      },
+      {
+        "token": "theme:legacy-ui",
+        "normalised": "theme:legacy-ui",
+        "kind": "prefixed",
+        "status": "retired",
+        "retired": "theme:legacy-ui",
+        "notation": "theme:ui",
+        "origin": "local",
+        "top": "ability:alpha"
+      },
+      {
+        "token": "UI-Old",
+        "normalised": "ui-old",
+        "kind": "keyword",
+        "status": "legacy",
+        "notation": "theme:ui",
+        "origin": "local",
+        "top": "ability:alpha"
+      },
+      {
+        "token": "ui",
+        "normalised": "ui",
+        "kind": "keyword",
+        "status": "label",
+        "notation": "theme:ui",
+        "origin": "local",
+        "top": "ability:alpha"
+      },
+      {
+        "token": "First",
+        "normalised": "first",
+        "kind": "keyword",
+        "status": "label",
+        "notation": "ability:alpha",
+        "origin": "core",
+        "top": "ability:alpha"
+      },
+      {
+        "token": "screen",
+        "normalised": "screen",
+        "kind": "keyword",
+        "status": "unknown"
+      },
+      {
+        "token": "theme:missing",
+        "normalised": "theme:missing",
+        "kind": "prefixed",
+        "status": "unknown"
+      },
+      {
+        "token": "ability:gamma",
+        "normalised": "ability:gamma",
+        "kind": "prefixed",
+        "status": "unknown"
+      }
+    ]
+  }
+}

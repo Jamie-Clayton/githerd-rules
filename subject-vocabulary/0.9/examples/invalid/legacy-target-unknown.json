@@ -16,11 +16,7 @@
       ]
     }
   ],
-  "retired": [
-    {
-      "notation": "theme:dashboard-ux",
-      "isReplacedBy": "ability:discoverability",
-      "deprecatedAt": "2026-10-01"
-    }
-  ]
+  "legacy": {
+    "kanban": "theme:board"
+  }
 }

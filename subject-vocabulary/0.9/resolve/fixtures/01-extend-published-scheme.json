@@ -1,0 +1,69 @@
+{
+  "description": "Steps 3 to 6 against the published 0.9 scheme with no register: a repository that has not added anything.",
+  "scheme": "scheme.json",
+  "register": null,
+  "tokens": [
+    " Ability:Traceability ",
+    "lineage",
+    "ark",
+    "theme:anything",
+    "topic:anything",
+    "Discoverability",
+    "ability:authoring"
+  ],
+  "expected": {
+    "resolutions": [
+      {
+        "token": " Ability:Traceability ",
+        "normalised": "ability:traceability",
+        "kind": "prefixed",
+        "status": "active",
+        "notation": "ability:traceability",
+        "origin": "core",
+        "top": "ability:traceability"
+      },
+      {
+        "token": "lineage",
+        "normalised": "lineage",
+        "kind": "keyword",
+        "status": "label",
+        "notation": "ability:traceability",
+        "origin": "core",
+        "top": "ability:traceability"
+      },
+      {
+        "token": "ark",
+        "normalised": "ark",
+        "kind": "keyword",
+        "status": "unknown"
+      },
+      {
+        "token": "theme:anything",
+        "normalised": "theme:anything",
+        "kind": "prefixed",
+        "status": "unknown"
+      },
+      {
+        "token": "topic:anything",
+        "normalised": "topic:anything",
+        "kind": "keyword",
+        "status": "unknown"
+      },
+      {
+        "token": "Discoverability",
+        "normalised": "discoverability",
+        "kind": "keyword",
+        "status": "label",
+        "notation": "ability:discoverability",
+        "origin": "core",
+        "top": "ability:discoverability"
+      },
+      {
+        "token": "ability:authoring",
+        "normalised": "ability:authoring",
+        "kind": "prefixed",
+        "status": "unknown"
+      }
+    ]
+  }
+}

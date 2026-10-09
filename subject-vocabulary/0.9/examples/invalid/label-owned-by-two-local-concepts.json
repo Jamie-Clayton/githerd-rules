@@ -14,13 +14,16 @@
       "hiddenLabel": [
         "dashboard tile"
       ]
-    }
-  ],
-  "retired": [
+    },
     {
-      "notation": "theme:dashboard-ux",
-      "isReplacedBy": "ability:discoverability",
-      "deprecatedAt": "2026-10-01"
+      "notation": "theme:reporting-ux",
+      "prefLabel": "Reporting UX",
+      "broader": [
+        "ability:observability"
+      ],
+      "hiddenLabel": [
+        "Dashboard  Tile"
+      ]
     }
   ]
 }

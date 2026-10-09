@@ -1,0 +1,186 @@
+{
+  "description": "Steps 1, 2, 5 and 6 under replace: core concepts leave the set, ability: tokens stay prefixed but never resolve (with a suggestion where a local concept exact-matches), undeclared prefixes are keywords.",
+  "scheme": {
+    "title": "Fixture scheme",
+    "identifier": "https://example.org/scheme.json",
+    "modified": "2026-10-09",
+    "concepts": [
+      {
+        "notation": "ability:alpha",
+        "prefLabel": "Alpha",
+        "definition": "d",
+        "scopeNote": "s",
+        "audience": "customer",
+        "altLabel": [
+          "first"
+        ],
+        "hiddenLabel": [
+          "one"
+        ]
+      },
+      {
+        "notation": "ability:beta",
+        "prefLabel": "Beta",
+        "definition": "d",
+        "scopeNote": "s",
+        "audience": "internal",
+        "hiddenLabel": [
+          "two"
+        ]
+      }
+    ],
+    "retired": [
+      {
+        "notation": "ability:old-alpha",
+        "isReplacedBy": "ability:alpha",
+        "deprecatedAt": "2026-10-01"
+      }
+    ]
+  },
+  "register": {
+    "$schema": "https://jamie-clayton.github.io/githerd-rules/subject-vocabulary/0.9/subject-vocabulary.schema.json",
+    "title": "Fixture register",
+    "identifier": "https://example.org/register",
+    "modified": "2026-10-09",
+    "conceptBase": "https://example.org/subjects/",
+    "core": "replace",
+    "prefixes": [
+      "capability",
+      "area"
+    ],
+    "concepts": [
+      {
+        "notation": "capability:tracing",
+        "prefLabel": "Tracing",
+        "exactMatch": [
+          {
+            "scheme": "core",
+            "notation": "ability:alpha"
+          }
+        ]
+      },
+      {
+        "notation": "capability:billing",
+        "prefLabel": "Billing"
+      },
+      {
+        "notation": "area:invoices",
+        "prefLabel": "Invoices",
+        "broader": [
+          "capability:billing"
+        ],
+        "altLabel": [
+          "Bills"
+        ]
+      }
+    ],
+    "legacy": {
+      "invoicing": "area:invoices"
+    }
+  },
+  "tokens": [
+    "ability:alpha",
+    "ability:beta",
+    "capability:billing",
+    "area:invoices",
+    "theme:ui",
+    "Alpha",
+    "tracing",
+    "Invoicing",
+    "bills"
+  ],
+  "expected": {
+    "vocabulary": [
+      {
+        "notation": "area:invoices",
+        "origin": "local",
+        "top": "capability:billing",
+        "hiddenLabel": []
+      },
+      {
+        "notation": "capability:billing",
+        "origin": "local",
+        "top": "capability:billing",
+        "hiddenLabel": []
+      },
+      {
+        "notation": "capability:tracing",
+        "origin": "local",
+        "top": "capability:tracing",
+        "hiddenLabel": []
+      }
+    ],
+    "resolutions": [
+      {
+        "token": "ability:alpha",
+        "normalised": "ability:alpha",
+        "kind": "prefixed",
+        "status": "unknown",
+        "suggestion": "capability:tracing"
+      },
+      {
+        "token": "ability:beta",
+        "normalised": "ability:beta",
+        "kind": "prefixed",
+        "status": "unknown"
+      },
+      {
+        "token": "capability:billing",
+        "normalised": "capability:billing",
+        "kind": "prefixed",
+        "status": "active",
+        "notation": "capability:billing",
+        "origin": "local",
+        "top": "capability:billing"
+      },
+      {
+        "token": "area:invoices",
+        "normalised": "area:invoices",
+        "kind": "prefixed",
+        "status": "active",
+        "notation": "area:invoices",
+        "origin": "local",
+        "top": "capability:billing"
+      },
+      {
+        "token": "theme:ui",
+        "normalised": "theme:ui",
+        "kind": "keyword",
+        "status": "unknown"
+      },
+      {
+        "token": "Alpha",
+        "normalised": "alpha",
+        "kind": "keyword",
+        "status": "unknown"
+      },
+      {
+        "token": "tracing",
+        "normalised": "tracing",
+        "kind": "keyword",
+        "status": "label",
+        "notation": "capability:tracing",
+        "origin": "local",
+        "top": "capability:tracing"
+      },
+      {
+        "token": "Invoicing",
+        "normalised": "invoicing",
+        "kind": "keyword",
+        "status": "legacy",
+        "notation": "area:invoices",
+        "origin": "local",
+        "top": "capability:billing"
+      },
+      {
+        "token": "bills",
+        "normalised": "bills",
+        "kind": "keyword",
+        "status": "label",
+        "notation": "area:invoices",
+        "origin": "local",
+        "top": "capability:billing"
+      }
+    ]
+  }
+}
