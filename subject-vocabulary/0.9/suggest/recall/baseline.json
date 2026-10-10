@@ -1,0 +1,14 @@
+{
+  "description": "Per-concept recall of the reference suggester on the synthetic corpus in docs/, with each document's own subjects hidden and the default definition weight. A change MUST NOT lower any value by more than 0.05 (suggest.md section 6).",
+  "definitionWeight": 1.5,
+  "recall": {
+    "ability:discoverability": 1.0,
+    "ability:engineering-quality": 0.67,
+    "ability:governability": 0.67,
+    "ability:interoperability": 0.67,
+    "ability:observability": 0.67,
+    "ability:repository-hygiene": 0.33,
+    "ability:securability": 0.67,
+    "ability:traceability": 0.67
+  }
+}

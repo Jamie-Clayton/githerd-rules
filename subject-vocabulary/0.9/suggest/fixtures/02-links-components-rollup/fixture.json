@@ -1,0 +1,145 @@
+{
+  "description": "Link neighbours by id and by relative path (counted once), an unresolved reference ignored, a component path adding to its broader theme, and the theme rolled up to its core ability outside the cap.",
+  "scheme": {
+    "$schema": "https://jamie-clayton.github.io/githerd-rules/subject-vocabulary/0.9/scheme.schema.json",
+    "title": "Suggester fixture scheme",
+    "identifier": "https://example.org/scheme.json",
+    "modified": "2026-10-10",
+    "concepts": [
+      {
+        "notation": "ability:alpha",
+        "prefLabel": "Alpha",
+        "scopeNote": "s",
+        "audience": "customer",
+        "altLabel": [
+          "lineage"
+        ],
+        "hiddenLabel": [
+          "typed relation",
+          "ark"
+        ],
+        "definition": "Every change can be traced through its lineage records."
+      },
+      {
+        "notation": "ability:beta",
+        "prefLabel": "Beta",
+        "scopeNote": "s",
+        "audience": "customer",
+        "hiddenLabel": [
+          "dashboard",
+          "kanban board"
+        ],
+        "definition": "Status appears on dashboards and kanban boards."
+      },
+      {
+        "notation": "ability:delta",
+        "prefLabel": "Delta",
+        "scopeNote": "s",
+        "audience": "customer",
+        "hiddenLabel": [
+          "worktree"
+        ],
+        "definition": "Branches stay tidy."
+      },
+      {
+        "notation": "ability:gamma",
+        "prefLabel": "Gamma",
+        "scopeNote": "s",
+        "audience": "customer",
+        "hiddenLabel": [
+          "pester"
+        ],
+        "definition": "Releases stay tested."
+      }
+    ]
+  },
+  "register": {
+    "$schema": "https://jamie-clayton.github.io/githerd-rules/subject-vocabulary/0.9/subject-vocabulary.schema.json",
+    "title": "Fixture register",
+    "identifier": "https://example.org/register",
+    "modified": "2026-10-10",
+    "conceptBase": "https://example.org/subjects/",
+    "concepts": [
+      {
+        "notation": "theme:boards",
+        "prefLabel": "Boards",
+        "broader": [
+          "ability:beta"
+        ],
+        "hiddenLabel": [
+          "swimlane"
+        ]
+      }
+    ],
+    "components": [
+      {
+        "notation": "component:web",
+        "paths": [
+          "web/**"
+        ],
+        "broader": [
+          "theme:boards"
+        ]
+      }
+    ]
+  },
+  "options": {
+    "withLinks": true
+  },
+  "expected": {
+    "$schema": "https://jamie-clayton.github.io/githerd-rules/subject-vocabulary/0.9/suggestions.schema.json",
+    "scheme": "0.9",
+    "generator": "Suggest-Subjects.ps1, Subject Vocabulary Standard 0.9 reference",
+    "documents": [
+      {
+        "path": "docs/e1.md",
+        "existing": [
+          "ability:alpha"
+        ],
+        "suggestions": []
+      },
+      {
+        "path": "docs/e2.md",
+        "existing": [],
+        "suggestions": [
+          {
+            "notation": "theme:boards",
+            "score": 0.4,
+            "reasons": [
+              {
+                "signal": "body",
+                "field": "body",
+                "match": "swimlane",
+                "weight": 1
+              },
+              {
+                "signal": "component-path",
+                "field": "body",
+                "match": "web/src/app.ts",
+                "weight": 1
+              }
+            ]
+          },
+          {
+            "notation": "ability:beta",
+            "score": 0.4,
+            "reasons": [
+              {
+                "signal": "body",
+                "field": "body",
+                "match": "swimlane",
+                "weight": 1
+              },
+              {
+                "signal": "component-path",
+                "field": "body",
+                "match": "web/src/app.ts",
+                "weight": 1
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

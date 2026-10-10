@@ -1,0 +1,158 @@
+{
+  "description": "Under replace the core concepts and hints take no part (alpha and ark are ignored, ability:alpha is not a signal), a keyword existing subject resolves to a local concept, a top-concept component adds its path signal to itself, and the definition signal works on a local concept.",
+  "scheme": {
+    "$schema": "https://jamie-clayton.github.io/githerd-rules/subject-vocabulary/0.9/scheme.schema.json",
+    "title": "Suggester fixture scheme",
+    "identifier": "https://example.org/scheme.json",
+    "modified": "2026-10-10",
+    "concepts": [
+      {
+        "notation": "ability:alpha",
+        "prefLabel": "Alpha",
+        "scopeNote": "s",
+        "audience": "customer",
+        "altLabel": [
+          "lineage"
+        ],
+        "hiddenLabel": [
+          "typed relation",
+          "ark"
+        ],
+        "definition": "Every change can be traced through its lineage records."
+      },
+      {
+        "notation": "ability:beta",
+        "prefLabel": "Beta",
+        "scopeNote": "s",
+        "audience": "customer",
+        "hiddenLabel": [
+          "dashboard",
+          "kanban board"
+        ],
+        "definition": "Status appears on dashboards and kanban boards."
+      },
+      {
+        "notation": "ability:delta",
+        "prefLabel": "Delta",
+        "scopeNote": "s",
+        "audience": "customer",
+        "hiddenLabel": [
+          "worktree"
+        ],
+        "definition": "Branches stay tidy."
+      },
+      {
+        "notation": "ability:gamma",
+        "prefLabel": "Gamma",
+        "scopeNote": "s",
+        "audience": "customer",
+        "hiddenLabel": [
+          "pester"
+        ],
+        "definition": "Releases stay tested."
+      }
+    ]
+  },
+  "register": {
+    "$schema": "https://jamie-clayton.github.io/githerd-rules/subject-vocabulary/0.9/subject-vocabulary.schema.json",
+    "title": "Fixture register",
+    "identifier": "https://example.org/register",
+    "modified": "2026-10-10",
+    "core": "replace",
+    "prefixes": [
+      "capability",
+      "area"
+    ],
+    "conceptBase": "https://example.org/subjects/",
+    "concepts": [
+      {
+        "notation": "capability:billing",
+        "prefLabel": "Billing",
+        "definition": "Customers receive correct invoices promptly."
+      }
+    ],
+    "components": [
+      {
+        "notation": "area:invoice-api",
+        "prefLabel": "Invoice API",
+        "hiddenLabel": [
+          "batch"
+        ],
+        "paths": [
+          "src/invoices/**"
+        ]
+      }
+    ]
+  },
+  "options": {},
+  "expected": {
+    "$schema": "https://jamie-clayton.github.io/githerd-rules/subject-vocabulary/0.9/suggestions.schema.json",
+    "scheme": "0.9",
+    "generator": "Suggest-Subjects.ps1, Subject Vocabulary Standard 0.9 reference",
+    "documents": [
+      {
+        "path": "docs/f1.md",
+        "existing": [],
+        "suggestions": [
+          {
+            "notation": "capability:billing",
+            "score": 0.5714,
+            "reasons": [
+              {
+                "signal": "title",
+                "field": "title",
+                "match": "billing",
+                "weight": 3
+              },
+              {
+                "signal": "definition",
+                "field": "definition",
+                "match": "customers, invoices, receive",
+                "weight": 1
+              }
+            ]
+          },
+          {
+            "notation": "area:invoice-api",
+            "score": 0.4,
+            "reasons": [
+              {
+                "signal": "body",
+                "field": "body",
+                "match": "batch",
+                "weight": 1
+              },
+              {
+                "signal": "component-path",
+                "field": "body",
+                "match": "src/invoices/batch.ps1",
+                "weight": 1
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "path": "docs/f2.md",
+        "existing": [
+          "ability:alpha",
+          "Billing"
+        ],
+        "suggestions": [
+          {
+            "notation": "capability:billing",
+            "score": 0.5714,
+            "reasons": [
+              {
+                "signal": "existing-subject",
+                "field": "subject",
+                "match": "Billing",
+                "weight": 4
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
