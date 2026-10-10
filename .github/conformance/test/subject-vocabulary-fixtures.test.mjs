@@ -37,3 +37,9 @@ for (const { label, fixture } of fixtures.filter((f) => f.label.startsWith('sugg
     check('suggestions', fixture.expected, `${label} expected`);
   });
 }
+
+test('scheme.md is generated from scheme.json and up to date', async () => {
+  const { renderSchemePage } = await import('../scheme-page.mjs');
+  const page = readFileSync(join(version, '..', 'scheme.md'), 'utf8').replaceAll('\r\n', '\n');
+  assert.equal(page, renderSchemePage(readJson(join(version, 'scheme.json')), '0.9'), 'Regenerate with: node .github/conformance/scheme-page.mjs --root .');
+});
