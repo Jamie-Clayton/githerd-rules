@@ -130,6 +130,10 @@ jobs:
             Install-Module Pester -MinimumVersion 5.5.0 -Scope CurrentUser -Force -SkipPublisherCheck
           }
           Import-Module Pester -MinimumVersion 5.5.0
+          # Reference implementations read Markdown front matter with powershell-yaml.
+          if (-not (Get-Module powershell-yaml -ListAvailable)) {
+            Install-Module powershell-yaml -RequiredVersion 0.4.12 -Scope CurrentUser -Force
+          }
           $config = New-PesterConfiguration
           $config.Run.Path = @($tests.FullName)
           $config.Run.Exit = $true

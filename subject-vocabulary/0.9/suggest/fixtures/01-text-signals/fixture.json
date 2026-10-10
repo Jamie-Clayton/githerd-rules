@@ -1,0 +1,182 @@
+{
+  "description": "Title, heading, body and definition signals; existing subjects (a label adds 4, an active one is never suggested); the 0.35 threshold; the cap of three with ties in notation order; fenced code ignored.",
+  "scheme": {
+    "$schema": "https://jamie-clayton.github.io/githerd-rules/subject-vocabulary/0.9/scheme.schema.json",
+    "title": "Suggester fixture scheme",
+    "identifier": "https://example.org/scheme.json",
+    "modified": "2026-10-10",
+    "concepts": [
+      {
+        "notation": "ability:alpha",
+        "prefLabel": "Alpha",
+        "scopeNote": "s",
+        "audience": "customer",
+        "altLabel": [
+          "lineage"
+        ],
+        "hiddenLabel": [
+          "typed relation",
+          "ark"
+        ],
+        "definition": "Every change can be traced through its lineage records."
+      },
+      {
+        "notation": "ability:beta",
+        "prefLabel": "Beta",
+        "scopeNote": "s",
+        "audience": "customer",
+        "hiddenLabel": [
+          "dashboard",
+          "kanban board"
+        ],
+        "definition": "Status appears on dashboards and kanban boards."
+      },
+      {
+        "notation": "ability:delta",
+        "prefLabel": "Delta",
+        "scopeNote": "s",
+        "audience": "customer",
+        "hiddenLabel": [
+          "worktree"
+        ],
+        "definition": "Branches stay tidy."
+      },
+      {
+        "notation": "ability:gamma",
+        "prefLabel": "Gamma",
+        "scopeNote": "s",
+        "audience": "customer",
+        "hiddenLabel": [
+          "pester"
+        ],
+        "definition": "Releases stay tested."
+      }
+    ]
+  },
+  "register": null,
+  "options": {},
+  "expected": {
+    "$schema": "https://jamie-clayton.github.io/githerd-rules/subject-vocabulary/0.9/suggestions.schema.json",
+    "scheme": "0.9",
+    "generator": "Suggest-Subjects.ps1, Subject Vocabulary Standard 0.9 reference",
+    "documents": [
+      {
+        "path": "docs/a-title.md",
+        "existing": [],
+        "suggestions": [
+          {
+            "notation": "ability:alpha",
+            "score": 0.5,
+            "reasons": [
+              {
+                "signal": "title",
+                "field": "title",
+                "match": "lineage",
+                "weight": 3
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "path": "docs/b-body.md",
+        "existing": [],
+        "suggestions": [
+          {
+            "notation": "ability:beta",
+            "score": 0.6296,
+            "reasons": [
+              {
+                "signal": "heading",
+                "field": "heading",
+                "match": "kanban board",
+                "weight": 1.5
+              },
+              {
+                "signal": "body",
+                "field": "body",
+                "match": "dashboard",
+                "weight": 2.0986
+              },
+              {
+                "signal": "definition",
+                "field": "definition",
+                "match": "appears, dashboards, kanban, status",
+                "weight": 1.5
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "path": "docs/c-existing.md",
+        "existing": [
+          "lineage",
+          "ability:gamma",
+          "topic-x"
+        ],
+        "suggestions": [
+          {
+            "notation": "ability:alpha",
+            "score": 0.5714,
+            "reasons": [
+              {
+                "signal": "existing-subject",
+                "field": "subject",
+                "match": "lineage",
+                "weight": 4
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "path": "docs/d-below.md",
+        "existing": [],
+        "suggestions": []
+      },
+      {
+        "path": "docs/e-many.md",
+        "existing": [],
+        "suggestions": [
+          {
+            "notation": "ability:alpha",
+            "score": 0.5,
+            "reasons": [
+              {
+                "signal": "title",
+                "field": "title",
+                "match": "ark",
+                "weight": 3
+              }
+            ]
+          },
+          {
+            "notation": "ability:beta",
+            "score": 0.5,
+            "reasons": [
+              {
+                "signal": "title",
+                "field": "title",
+                "match": "dashboard",
+                "weight": 3
+              }
+            ]
+          },
+          {
+            "notation": "ability:delta",
+            "score": 0.5,
+            "reasons": [
+              {
+                "signal": "title",
+                "field": "title",
+                "match": "worktree",
+                "weight": 3
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
