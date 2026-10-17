@@ -42,6 +42,20 @@ blocks it.
 | [GHFM0016](https://jamie-clayton.github.io/githerd-rules/rules/GHFM0016) | `subject-outside-policy` | `warning` | B |
 | [GHFM0017](https://jamie-clayton.github.io/githerd-rules/rules/GHFM0017) | `subject-count-outside-policy` | `warning` | B |
 
+## Rules by ability
+
+Each rule page names the abilities of the
+[Subject Vocabulary Standard](https://jamie-clayton.github.io/githerd-rules/subject-vocabulary/) it protects.
+
+| Ability | Rules |
+| ------- | ----- |
+| `ability:governability` | [GHFM0001](https://jamie-clayton.github.io/githerd-rules/rules/GHFM0001), [GHFM0002](https://jamie-clayton.github.io/githerd-rules/rules/GHFM0002), [GHFM0003](https://jamie-clayton.github.io/githerd-rules/rules/GHFM0003), [GHFM0004](https://jamie-clayton.github.io/githerd-rules/rules/GHFM0004), [GHFM0005](https://jamie-clayton.github.io/githerd-rules/rules/GHFM0005), [GHFM0006](https://jamie-clayton.github.io/githerd-rules/rules/GHFM0006), [GHFM0007](https://jamie-clayton.github.io/githerd-rules/rules/GHFM0007), [GHFM0009](https://jamie-clayton.github.io/githerd-rules/rules/GHFM0009), [GHFM0010](https://jamie-clayton.github.io/githerd-rules/rules/GHFM0010), [GHFM0014](https://jamie-clayton.github.io/githerd-rules/rules/GHFM0014), [GHFM0016](https://jamie-clayton.github.io/githerd-rules/rules/GHFM0016) |
+| `ability:interoperability` | [GHFM0003](https://jamie-clayton.github.io/githerd-rules/rules/GHFM0003), [GHFM0006](https://jamie-clayton.github.io/githerd-rules/rules/GHFM0006) |
+| `ability:securability` | [GHFM0005](https://jamie-clayton.github.io/githerd-rules/rules/GHFM0005) |
+| `ability:discoverability` | [GHFM0007](https://jamie-clayton.github.io/githerd-rules/rules/GHFM0007), [GHFM0015](https://jamie-clayton.github.io/githerd-rules/rules/GHFM0015), [GHFM0016](https://jamie-clayton.github.io/githerd-rules/rules/GHFM0016), [GHFM0017](https://jamie-clayton.github.io/githerd-rules/rules/GHFM0017) |
+| `ability:traceability` | [GHFM0008](https://jamie-clayton.github.io/githerd-rules/rules/GHFM0008), [GHFM0014](https://jamie-clayton.github.io/githerd-rules/rules/GHFM0014) |
+| `ability:observability` | [GHFM0010](https://jamie-clayton.github.io/githerd-rules/rules/GHFM0010) |
+
 ## Using a rule identifier
 
 - In a pull-request comment or an editor, quote the identifier and the
