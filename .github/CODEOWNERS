@@ -1,0 +1,17 @@
+# CODEOWNERS -- githerd-rules
+#
+# Introduced by Githerd init-120 S16 (plan-142, adr-069 D13). Scope is
+# deliberately narrow: broadening CODEOWNERS to other paths is a repository
+# governance decision, not a subject vocabulary one.
+#
+# HONEST CAVEAT ON ENFORCEMENT. CODEOWNERS enforces nothing on its own; it
+# only bites when a branch-protection rule requires code-owner review on the
+# protected branch. On a single-maintainer repository the code owner and the
+# author are the same account, so the guardrail buys an audit trail and a
+# deliberate second look, not independent review.
+
+# The Subject Vocabulary Standard: the core scheme every adopter vendors, its
+# schemas and its reference implementations. githerd_subject_experiment_promote
+# produces all-scope patches against the core scheme that a person applies;
+# nothing is adopted until a code owner merges the pull request.
+/subject-vocabulary/ @Jamie-Clayton
